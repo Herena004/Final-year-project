@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EduAdmin Portal – College Administration System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f0f4f8;--bg2:#fff;--side:#1e3a5f;--side2:#254b7a;--side3:#2e6db4;--stext:#b8d0f0;--acc:#2563eb;--accd:#1d4ed8;--accl:#eff6ff;--ok:#16a34a;--okl:#f0fdf4;--warn:#d97706;--warnl:#fffbeb;--err:#dc2626;--errl:#fef2f2;--tx:#1e293b;--tx2:#475569;--tx3:#94a3b8;--bd:#e2e8f0;--bd2:#cbd5e1;--sh:0 1px 3px rgba(0,0,0,.08);--sh2:0 4px 16px rgba(0,0,0,.12);--r:10px}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx)}
+/* ── AUTH ── */
+.auth-page{min-height:100vh;display:flex;background:linear-gradient(135deg,#1e3a5f,#2563eb)}
+.auth-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;color:#fff;text-align:center}
+.auth-brand-icon{font-size:72px;margin-bottom:12px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.3))}
+.auth-brand-name{font-size:32px;font-weight:700}
+.auth-brand-sub{font-size:15px;opacity:.8;margin-top:6px}
+.auth-features{margin-top:36px;display:flex;flex-direction:column;gap:14px;text-align:left}
+.auth-feat{display:flex;align-items:center;gap:12px;font-size:14px;opacity:.9}
+.auth-feat span:first-child{font-size:22px}
+.auth-right{width:480px;background:#fff;display:flex;align-items:center;justify-content:center;padding:40px}
+.auth-box{width:100%;max-width:380px}
+.auth-title{font-size:26px;font-weight:700;color:var(--tx)}
+.auth-sub{font-size:13px;color:var(--tx2);margin-top:4px;margin-bottom:24px}
+/* role tabs */
+.rtabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);padding:4px;margin-bottom:22px}
+.rtab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border:none;background:transparent;border-radius:8px;cursor:pointer;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--tx2);transition:all .2s;font-family:inherit}
+.rtab .ico{font-size:20px}
+.rtab.on{background:var(--acc);color:#fff;box-shadow:var(--sh)}
+.rtab:hover:not(.on){background:var(--bd)}
+/* inputs */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fl{font-size:12px;font-weight:600;color:var(--tx2)}
+.iw{position:relative}
+.ii{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--tx3)}
+.fi{width:100%;padding:10px 12px 10px 36px;border:1.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:inherit;color:var(--tx);background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.fi.no{padding-left:12px}
+.fi:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.fi.sm{padding:7px 10px;font-size:12px}
+select.fi{cursor:pointer}
+textarea.fi{resize:vertical;padding-top:10px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;white-space:nowrap}
+.btn-p{background:var(--acc);color:#fff}.btn-p:hover{background:var(--accd)}
+.btn-ok{background:var(--ok);color:#fff}.btn-ok:hover{filter:brightness(1.1)}
+.btn-err{background:var(--err);color:#fff}.btn-err:hover{filter:brightness(1.1)}
+.btn-out{background:transparent;color:var(--acc);border:1.5px solid var(--acc)}.btn-out:hover{background:var(--accl)}
+.btn-g{background:var(--bg);color:var(--tx2);border:1px solid var(--bd2)}.btn-g:hover{background:var(--bd)}
+.btn-xs{padding:5px 9px;font-size:11px;border-radius:6px}
+.btn-sm{padding:7px 14px;font-size:12px}
+.bfull{width:100%}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.sp{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* misc auth */
+.aerr{background:var(--errl);border:1px solid #fecaca;color:var(--err);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.asuc{background:var(--okl);border:1px solid #bbf7d0;color:var(--ok);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.ahint{background:var(--accl);border:1px solid #bfdbfe;color:var(--acc);border-radius:8px;padding:10px 12px;font-size:12px;margin-bottom:14px}
+.alink{font-size:13px;color:var(--tx2);margin-bottom:12px;text-align:center}
+.alink a{color:var(--acc);font-weight:600;cursor:pointer;text-decoration:none}
+.alink a:hover{text-decoration:underline}
+.alink.right{text-align:right;margin-top:-8px}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bd)}
+.divider span{font-size:11px;color:var(--tx3);font-weight:500}
+/* ── APP SHELL ── */
+#app{display:none}.app{display:flex;height:100vh;overflow:hidden}
+/* sidebar */
+.sidebar{width:248px;min-width:248px;background:var(--side);display:flex;flex-direction:column;transition:width .25s,min-width .25s;overflow:hidden;z-index:100}
+.sidebar.col{width:58px;min-width:58px}
+.sb-head{display:flex;align-items:center;justify-content:space-between;padding:16px 12px;border-bottom:1px solid rgba(255,255,255,.1);min-height:64px}
+.sb-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.sb-ico{font-size:28px;flex-shrink:0;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+.sb-name{font-size:14px;font-weight:700;color:#fff}
+.sb-role{font-size:10px;font-weight:600;color:#60a5fa;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.sb-tog{width:26px;height:26px;background:rgba(255,255,255,.1);border:none;border-radius:6px;color:var(--stext);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.sb-tog:hover{background:rgba(255,255,255,.2);color:#fff}
+.sb-body{flex:1;overflow-y:auto;padding:10px 8px;scrollbar-width:none}
+.sb-body::-webkit-scrollbar{display:none}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;font-size:13px;font-weight:500;color:var(--stext);border-radius:8px;margin:1px 0;transition:all .15s;white-space:nowrap;user-select:none}
+.nav-item:hover{background:var(--side2);color:#fff}
+.nav-item.on{background:var(--side3);color:#fff}
+.nav-item .ni{font-size:17px;flex-shrink:0;width:22px;text-align:center;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
+.nav-item .nl{flex:1}
+.nav-item .nc{font-size:10px;transition:transform .2s;color:rgba(255,255,255,.4)}
+.nav-item .nc.open{transform:rotate(180deg)}
+.nav-child{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 30px;font-size:12px;color:rgba(184,208,240,.8);cursor:pointer;border-radius:6px;margin:1px 0;transition:all .15s;white-space:nowrap;user-select:none}
+.nav-child:hover{background:var(--side2);color:#fff}
+.nav-child.on{color:#93c5fd;background:rgba(37,99,235,.25)}
+.nav-child .nci{font-size:13px}
+.sb-foot{border-top:1px solid rgba(255,255,255,.1);padding:12px 10px;display:flex;flex-direction:column;gap:8px}
+.uprofile{display:flex;align-items:center;gap:10px}
+.uavatar{width:36px;height:36px;border-radius:8px;background:var(--side3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+.uname{font-size:13px;font-weight:600;color:#fff}
+.urole{font-size:10px;color:#60a5fa;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.logout{width:100%;padding:7px 12px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;color:#fca5a5;cursor:pointer;font-size:13px;font-weight:500;text-align:left;transition:all .2s;font-family:inherit}
+.logout:hover{background:rgba(239,68,68,.25)}
+/* topbar */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;background:#fff;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 22px;flex-shrink:0;box-shadow:var(--sh)}
+.bread{font-size:15px;font-weight:600;color:var(--tx)}
+.tb-right{display:flex;align-items:center;gap:10px}
+/* notification bell */
+.notif-wrap{position:relative}
+.notif-btn{width:36px;height:36px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;position:relative;transition:all .2s}
+.notif-btn:hover{background:var(--bd)}
+.ndot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--err);border-radius:50%;border:2px solid #fff}
+.ndrop{position:absolute;top:calc(100% + 8px);right:0;width:300px;background:#fff;border:1px solid var(--bd);border-radius:12px;box-shadow:var(--sh2);z-index:999;display:none}
+.ndrop.open{display:block}
+.ndrop-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd)}
+.ndrop-title{font-size:13px;font-weight:700;color:var(--tx)}
+.ndrop-clear{font-size:11px;color:var(--acc);cursor:pointer;font-weight:600}
+.ndrop-clear:hover{text-decoration:underline}
+.nitem{display:flex;gap:10px;padding:12px 14px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .15s}
+.nitem:last-child{border-bottom:none}
+.nitem:hover{background:var(--bg)}
+.nitem.unread{background:var(--accl)}
+.nitem-ico{font-size:20px;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.nitem-text{font-size:12px;color:var(--tx);flex:1}
+.nitem-time{font-size:10px;color:var(--tx3);margin-top:3px}
+.ndrop-empty{padding:24px;text-align:center;color:var(--tx3);font-size:13px}
+/* topbar user chip */
+.tb-user{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--accl);border:1px solid #bfdbfe;border-radius:8px;font-size:13px;font-weight:600;color:var(--acc)}
+/* page */
+.page-wrap{flex:1;overflow-y:auto;padding:22px;background:var(--bg)}
+.page{display:flex;flex-direction:column;gap:18px}
+.ph{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.pt{font-size:21px;font-weight:700;color:var(--tx)}
+.ps{font-size:13px;color:var(--tx2);margin-top:2px}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.sc{background:#fff;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;border:1px solid var(--bd);box-shadow:var(--sh)}
+.sico{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))}
+.sv{font-size:24px;font-weight:700;color:var(--tx)}
+.sl{font-size:11px;color:var(--tx2);margin-top:2px}
+.sch{font-size:11px;color:var(--ok);margin-top:3px}
+/* cards */
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:var(--sh)}
+.ch{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:14px 18px;border-bottom:1px solid var(--bd)}
+.ct{font-size:13px;font-weight:600;color:var(--tx)}
+.cb{padding:16px 18px}
+.cb.p0{padding:0}
+/* grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.g2{grid-template-columns:1fr}}
+/* table */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx2);background:var(--bg);border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid var(--bd);color:var(--tx)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+.tm{font-weight:500}
+.ts{color:var(--tx2)}
+/* badges */
+.badge{display:inline-block;padding:3px 8px;background:var(--bg);border-radius:5px;font-size:11px;font-weight:500;color:var(--tx2);border:1px solid var(--bd);white-space:nowrap}
+.badge.a{background:var(--accl);color:var(--acc);border-color:#bfdbfe}
+.badge.g{background:var(--okl);color:var(--ok);border-color:#bbf7d0}
+.sbadge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600}
+.sbadge.pending{background:var(--warnl);color:var(--warn)}
+.sbadge.approved{background:var(--okl);color:var(--ok)}
+.sbadge.rejected{background:var(--errl);color:var(--err)}
+.abts{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+/* filter row */
+.frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* mini stats */
+.mstats{display:flex;gap:10px;flex-wrap:wrap}
+.ms{flex:1;min-width:90px;background:#fff;border:1px solid var(--bd);border-radius:10px;padding:14px;text-align:center;box-shadow:var(--sh)}
+.ms.pending{border-top:3px solid var(--warn)}
+.ms.approved{border-top:3px solid var(--ok)}
+.ms.rejected{border-top:3px solid var(--err)}
+.msv{font-size:26px;font-weight:700;color:var(--tx)}
+.msl{font-size:11px;color:var(--tx2);text-transform:capitalize;margin-top:3px}
+/* prediction */
+.pred{margin-top:10px;padding:12px;border-radius:8px;font-size:14px;font-weight:500}
+.pred.risk{background:var(--errl);border:1px solid #fecaca;color:var(--err)}
+.pred.excellent{background:var(--okl);border:1px solid #bbf7d0;color:var(--ok)}
+.pred.average{background:var(--warnl);border:1px solid #fed7aa;color:var(--warn)}
+/* scholarship info */
+.sch-info{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--sh)}
+.ii2{display:flex;align-items:flex-start;gap:10px}
+.ii2ico{font-size:20px;flex-shrink:0;margin-top:2px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.iil{font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em}
+.iiv{font-size:13px;color:var(--tx2);margin-top:3px}
+.iiv.hi{color:var(--ok);font-weight:700;font-size:15px}
+/* user card */
+.ucard{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--bd);transition:background .15s}
+.ucard:hover{background:var(--bg)}
+.ucard:last-child{border-bottom:none}
+.uca{width:40px;height:40px;border-radius:10px;background:var(--accl);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.15))}
+.ucn{font-size:13px;font-weight:600;color:var(--tx)}
+.ucr{font-size:12px;color:var(--tx2);margin-top:2px}
+/* toggle */
+.toggle{position:relative;width:40px;height:20px;cursor:pointer;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.ts2{position:absolute;inset:0;background:var(--bd2);border-radius:100px;transition:background .2s}
+.ts2::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle input:checked+.ts2{background:var(--acc)}
+.toggle input:checked+.ts2::after{transform:translateX(20px)}
+/* pref item */
+.pi{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd)}
+.pi:last-child{border-bottom:none}
+.pil{font-size:13px;font-weight:500;color:var(--tx)}
+.pid{font-size:12px;color:var(--tx2);margin-top:2px}
+/* timetable */
+.ttcell{background:var(--accl);font-weight:600;font-size:11px;text-align:center;color:var(--acc);border-radius:4px;padding:6px 4px}
+.ttcell.lunch{background:var(--okl);color:var(--ok)}
+/* modal */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:2000;backdrop-filter:blur(2px)}
+.mbox{background:#fff;border-radius:14px;padding:26px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.mtitle{font-size:17px;font-weight:700;color:var(--tx)}
+.mclose{width:28px;height:28px;background:var(--bg);border:1px solid var(--bd);border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--tx2)}
+.mclose:hover{background:var(--bd)}
+.mfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--bd)}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* alert */
+.alt{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:10px}
+.alt-ok{background:var(--okl);border:1px solid #bbf7d0;color:var(--ok)}
+.alt-info{background:var(--accl);border:1px solid #bfdbfe;color:var(--acc)}
+/* empty */
+.empty{text-align:center;padding:32px;color:var(--tx3);font-size:13px}
+/* role access badge */
+.role-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.04em}
+.rt-admin{background:#fdf2ff;color:#9333ea;border:1px solid #e9d5ff}
+.rt-hod{background:var(--okl);color:var(--ok);border:1px solid #bbf7d0}
+.rt-staff{background:var(--accl);color:var(--acc);border:1px solid #bfdbfe}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ AUTH SCREEN ═══════════ -->
+<div id="authPage" class="auth-page">
+  <div class="auth-left">
+    <div class="auth-brand-icon">🏛️</div>
+    <div class="auth-brand-name">EduAdmin Portal</div>
+    <div class="auth-brand-sub">College Administration System</div>
+    <div class="auth-features">
+      <div class="auth-feat"><span>🎓</span><span>Role-Based Secure Access</span></div>
+      <div class="auth-feat"><span>📋</span><span>Leave &amp; Certificate Approvals</span></div>
+      <div class="auth-feat"><span>📁</span><span>Document Management</span></div>
+      <div class="auth-feat"><span>🏆</span><span>Scholarship Module</span></div>
+      <div class="auth-feat"><span>📊</span><span>Examination Management</span></div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box" id="authBox"></div>
+  </div>
+</div>
+
+<!-- ═══════════ MAIN APP ═══════════ -->
+<div id="app" class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-brand" id="sbBrand">
+        <span class="sb-ico">🏛️</span>
+        <div><div class="sb-name">EduAdmin</div><div class="sb-role" id="sbRole"></div></div>
+      </div>
+      <button class="sb-tog" onclick="toggleSidebar()">◀</button>
+    </div>
+    <div class="sb-body" id="sbNav"></div>
+    <div class="sb-foot">
+      <div class="uprofile">
+        <div class="uavatar" id="uAvatar"></div>
+        <div id="uInfo" style="min-width:0">
+          <div class="uname" id="uName"></div>
+          <div class="urole" id="uRole"></div>
+        </div>
+      </div>
+      <button class="logout" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="bread" id="breadcrumb">Dashboard</div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" onclick="toggleNotif()" id="notifBtn">
+            🔔<span class="ndot" id="ndot"></span>
+          </button>
+          <div class="ndrop" id="ndrop">
+            <div class="ndrop-head">
+              <span class="ndrop-title">Notifications</span>
+              <span class="ndrop-clear" onclick="clearNotifs()">Clear All</span>
+            </div>
+            <div id="nlist"></div>
+          </div>
+        </div>
+        <div class="tb-user"><span id="tbIcon"></span><span id="tbName"></span></div>
+      </div>
+    </div>
+    <div class="page-wrap" id="pageWrap"></div>
+  </main>
+</div>
+
+<!-- ═══════════ MODAL ═══════════ -->
+<div class="mo" id="modal" style="display:none" onclick="closeModal(event)">
+  <div class="mbox" id="mbox" onclick="event.stopPropagation()">
+    <div class="mhead">
+      <span class="mtitle" id="mtitle"></span>
+      <button class="mclose" onclick="closeModal()">✕</button>
+    </div>
+    <div id="mbody"></div>
+    <div class="mfoot" id="mfoot"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+const S = {
+  auth: null, // {name, email, role}
+  authScreen: 'login',
+  authRole: 'admin',
+  page: 'dashboard',
+  sbCol: false,
+  notifOpen: false,
+  openGroups: {users:true,docs:true,leave:true,schol:false,tt:false,exam:false,sets:false},
+  modal: null,
+  editId: null,
+  success: '',
+  accounts: [
+    {name:'Admin User',email:'admin@college.edu',password:'admin123',role:'admin'},
+    {name:'Staff Member',email:'staff@college.edu',password:'staff123',role:'staff'},
+    {name:'HOD Kumar',email:'hod@college.edu',password:'hod123',role:'hod'},
+  ],
+  notifications: [
+    {id:1,icon:'📋',text:'New leave request from Priya S.',time:'2 min ago',read:false},
+    {id:2,icon:'🎓',text:'BC/MBC scholarship application submitted',time:'15 min ago',read:false},
+    {id:3,icon:'📁',text:'Document uploaded by Vikram N.',time:'1 hr ago',read:false},
+    {id:4,icon:'📊',text:'Exam schedule updated for CSE dept',time:'3 hrs ago',read:true},
+    {id:5,icon:'✅',text:'Leave request approved for Dr. Kumar',time:'Yesterday',read:true},
+  ],
+  docs: [
+    {id:1,name:'Rahul Kumar',type:'Bonafide Certificate',dept:'CSE',date:'2024-01-15',size:'245 KB'},
+    {id:2,name:'Anita Sharma',type:'ID Proof',dept:'ECE',date:'2024-01-18',size:'180 KB'},
+    {id:3,name:'John Doe',type:'Marks Sheet',dept:'MECH',date:'2024-02-01',size:'320 KB'},
+    {id:4,name:'Priya Singh',type:'Transfer Certificate',dept:'CIVIL',date:'2024-02-10',size:'290 KB'},
+    {id:5,name:'Vikram Nair',type:'Bonafide Certificate',dept:'IT',date:'2024-02-14',size:'260 KB'},
+  ],
+  leaves: [
+    {id:1,name:'Priya S.',type:'Medical Leave',dept:'CSE',from:'2024-03-10',to:'2024-03-12',role:'Student',status:'pending'},
+    {id:2,name:'Vikram R.',type:'OD Request',dept:'ECE',from:'2024-03-15',to:'2024-03-15',role:'Student',status:'pending'},
+    {id:3,name:'Anjali M.',type:'Bonafide Request',dept:'IT',from:'2024-03-16',to:'2024-03-16',role:'Student',status:'approved'},
+    {id:4,name:'Dr. Kumar',type:'Casual Leave',dept:'CSE',from:'2024-03-18',to:'2024-03-19',role:'Staff',status:'approved'},
+    {id:5,name:'Ravi Shankar',type:'Medical Leave',dept:'MECH',from:'2024-03-20',to:'2024-03-22',role:'Staff',status:'rejected'},
+  ],
+  users: [
+    {id:1,name:'Dr. A. Krishnamurthy',role:'HOD',dept:'CSE',email:'hod.cse@college.edu',phone:'9876543210',status:'active'},
+    {id:2,name:'Prof. S. Venkatesh',role:'Staff',dept:'ECE',email:'venkatesh@college.edu',phone:'9876543211',status:'active'},
+    {id:3,name:'Admin User',role:'Admin',dept:'Administration',email:'admin@college.edu',phone:'9876543212',status:'active'},
+    {id:4,name:'Prof. M. Rajan',role:'Staff',dept:'MECH',email:'rajan@college.edu',phone:'9876543213',status:'inactive'},
+  ],
+  exams: [
+    {id:1,subject:'Data Structures',dept:'CSE',sem:'3rd',date:'2024-04-15',time:'9:00 AM',hall:'A101',students:65},
+    {id:2,subject:'Signals & Systems',dept:'ECE',sem:'4th',date:'2024-04-16',time:'9:00 AM',hall:'B202',students:58},
+    {id:3,subject:'Thermodynamics',dept:'MECH',sem:'3rd',date:'2024-04-17',time:'2:00 PM',hall:'C303',students:72},
+  ],
+  scholarships: {
+    'sch-first':   {title:'First Graduate Scholarship',desc:'For first-generation graduates from Tamil Nadu',eligibility:'Income < ₹2.5L, First graduate in family, 60%+ marks',amount:'₹12,000/year',apps:[{id:1,name:'Ramesh P.',roll:'21CS001',dept:'CSE',income:'₹1.8L',marks:'78%',status:'approved'},{id:2,name:'Lakshmi K.',roll:'21EC045',dept:'ECE',income:'₹2.1L',marks:'72%',status:'pending'},{id:3,name:'Murugan S.',roll:'21ME012',dept:'MECH',income:'₹2.3L',marks:'65%',status:'pending'}]},
+    'sch-bcmbc':   {title:'BC / MBC Scholarship',desc:'For Backward Class & Most Backward Class students',eligibility:'BC/MBC community, Income < ₹5L, Valid certificate',amount:'₹10,000/year',apps:[{id:1,name:'Senthil N.',roll:'21CS055',dept:'CSE',income:'₹3.2L',marks:'70%',status:'approved'},{id:2,name:'Geetha M.',roll:'21IT023',dept:'IT',income:'₹4.5L',marks:'68%',status:'pending'}]},
+    'sch-post':    {title:'Post Matric Scholarship',desc:'Govt. of India scholarship for SC/ST students',eligibility:'SC/ST community, Income < ₹2.5L, Full-time enrollment',amount:'₹15,000/year + fee reimbursement',apps:[{id:1,name:'Selvi A.',roll:'21CS067',dept:'CSE',income:'₹1.2L',marks:'76%',status:'approved'},{id:2,name:'Kumar D.',roll:'21ME089',dept:'MECH',income:'₹2.0L',marks:'69%',status:'pending'}]},
+    'sch-res':     {title:'7.5% Reservation Scholarship',desc:'For government school students under 7.5% quota',eligibility:'Govt. school, 50%+ in +2, Sports/NCC preferred',amount:'Full fee waiver',apps:[{id:1,name:'Mani K.',roll:'21CS044',dept:'CSE',income:'₹1.5L',marks:'58%',status:'approved'},{id:2,name:'Radha L.',roll:'22ME033',dept:'MECH',income:'₹2.0L',marks:'54%',status:'pending'}]},
+    'sch-merit':   {title:'Merit Scholarship',desc:'For academically excellent students',eligibility:'First class throughout, 85%+ marks, Good conduct',amount:'₹5,000/semester',apps:[{id:1,name:'Deepa R.',roll:'21CS099',dept:'CSE',income:'₹6L',marks:'91%',status:'approved'},{id:2,name:'Arjun M.',roll:'21ECE077',dept:'ECE',income:'₹4.5L',marks:'88%',status:'approved'}]},
+    'sch-fee':     {title:'Fee Concession Scholarship',desc:'Fee concession for economically weaker students',eligibility:'Income < ₹3L, No other scholarship, 60%+ attendance',amount:'25–75% fee concession',apps:[{id:1,name:'Vinoth K.',roll:'21ME056',dept:'MECH',income:'₹2.8L',marks:'67%',status:'approved'},{id:2,name:'Preethi J.',roll:'22IT067',dept:'IT',income:'₹1.9L',marks:'71%',status:'pending'}]},
+  },
+  ttDept:'CSE',ttSem:'3rd',ttTable:null,
+  settings:{college:'Sri Venkateswara College of Engineering',email:'admin@svce.ac.in',phone:'+91 44 2715 5000',notifs:true,emails:true,auto:false},
+  docSearch:'',docType:'All',docDept:'All',
+};
+
+const DEPTS=['CSE','ECE','MECH','IT','CIVIL'];
+const DOC_TYPES=['Bonafide Certificate','ID Proof','Marks Sheet','Transfer Certificate','Fee Receipt'];
+const LEAVE_TYPES=['Medical Leave','Casual Leave','Emergency Leave','OD Request','Bonafide Request','Bonafide Certificate','Transfer Certificate','Course Completion'];
+const SEMS=['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+
+// Role access control
+const ACCESS = {
+  admin: ['dashboard','users','documents','leave','od','certs','sch-first','sch-bcmbc','sch-post','sch-res','sch-merit','sch-fee','timetable','examination','settings'],
+  hod:   ['dashboard','documents','leave','od','certs','sch-first','sch-bcmbc','sch-post','sch-res','sch-merit','sch-fee','timetable'],
+  staff: ['dashboard','documents','leave','od','certs'],
+};
+
+function canAccess(page) {
+  if (!S.auth) return false;
+  return (ACCESS[S.auth.role] || []).includes(page);
+}
+
+// ══════════════════════════════════════════════════════
+//  RENDER ENGINE
+// ══════════════════════════════════════════════════════
+function render() {
+  if (!S.auth) { renderAuth(); return; }
+  document.getElementById('authPage').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  renderSidebar();
+  renderTopbar();
+  renderNotifs();
+  renderPage();
+}
+
+// ── AUTH ──────────────────────────────────────────────
+function renderAuth() {
+  document.getElementById('authPage').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  const box = document.getElementById('authBox');
+  const r = S.authRole;
+  const hints = {admin:'admin@college.edu / admin123',staff:'staff@college.edu / staff123',hod:'hod@college.edu / hod123'};
+  const roleTabs = (sel) => ['admin','staff','hod'].map(rl=>`
+    <button class="rtab ${S.authRole===rl?'on':''}" onclick="setAuthRole('${rl}')">
+      <span class="ico">${rl==='admin'?'🛡️':rl==='staff'?'👨‍💼':'🎓'}</span>
+      <span>${rl.toUpperCase()}</span>
+    </button>`).join('');
+
+  if (S.authScreen === 'login') {
+    box.innerHTML = `
+      <div class="auth-title">Welcome back 👋</div>
+      <div class="auth-sub">Sign in to your account to continue</div>
+      <div class="rtabs">${roleTabs()}</div>
+      ${S.success?`<div class="asuc">${S.success}</div>`:''}
+      ${S.authError?`<div class="aerr">${S.authError}</div>`:''}
+      <div class="ahint">💡 Hint: ${hints[r]}</div>
+      <form onsubmit="doLogin(event)">
+        <div class="fg"><label class="fl">Email Address</label>
+          <div class="iw"><span class="ii">✉️</span><input class="fi" type="email" id="lemail" placeholder="Enter email" required /></div></div>
+        <div class="fg"><label class="fl">Password</label>
+          <div class="iw"><span class="ii">🔒</span><input class="fi" type="password" id="lpwd" placeholder="Enter password" required /></div></div>
+        <div class="alink right"><a onclick="gotoScreen('forgot')">Forgot password?</a></div>
+        <button class="btn btn-p bfull" type="submit">Sign In</button>
+      </form>
+      <div class="divider"><span>OR</span></div>
+      <div class="alink">Don't have an account? <a onclick="gotoScreen('signup')">Sign Up</a></div>`;
+  } else if (S.authScreen === 'signup') {
+    box.innerHTML = `
+      <div class="auth-title">Create account 🎉</div>
+      <div class="auth-sub">Register as a college portal user</div>
+      <div class="rtabs">${roleTabs()}</div>
+      ${S.authError?`<div class="aerr">${S.authError}</div>`:''}
+      <form onsubmit="doSignup(event)">
+        <div class="fg"><label class="fl">Full Name</label>
+          <div class="iw"><span class="ii">👤</span><input class="fi" id="sname" placeholder="Full name" required /></div></div>
+        <div class="fg"><label class="fl">Email Address</label>
+          <div class="iw"><span class="ii">✉️</span><input class="fi" type="email" id="semail" placeholder="Email" required /></div></div>
+        <div class="fg"><label class="fl">Password</label>
+          <div class="iw"><span class="ii">🔒</span><input class="fi" type="password" id="spwd" placeholder="Create password" required /></div></div>
+        <div class="fg"><label class="fl">Confirm Password</label>
+          <div class="iw"><span class="ii">🔒</span><input class="fi" type="password" id="spwd2" placeholder="Confirm password" required /></div></div>
+        <button type="button" class="btn btn-out btn-sm" style="margin-bottom:14px" onclick="genPwd()">⚡ Generate Strong Password</button>
+        <button class="btn btn-p bfull" type="submit">Create Account</button>
+      </form>
+      <div class="alink" style="margin-top:10px">Already have an account? <a onclick="gotoScreen('login')">Sign In</a></div>`;
+  } else {
+    box.innerHTML = `
+      <div class="auth-title">Forgot password 🔑</div>
+      <div class="auth-sub">Enter your email to reset your password</div>
+      ${S.success?`<div class="asuc">${S.success}</div>`:''}
+      ${S.authError?`<div class="aerr">${S.authError}</div>`:''}
+      <form onsubmit="doForgot(event)">
+        <div class="fg"><label class="fl">Email Address</label>
+          <div class="iw"><span class="ii">✉️</span><input class="fi" type="email" id="femail" placeholder="Your email" required /></div></div>
+        <button class="btn btn-p bfull" type="submit">Send Reset Link</button>
+      </form>
+      <div class="alink" style="margin-top:10px"><a onclick="gotoScreen('login')">← Back to Sign In</a></div>`;
+  }
+}
+
+function setAuthRole(r){ S.authRole=r; S.authError=''; S.success=''; renderAuth(); }
+function gotoScreen(s){ S.authScreen=s; S.authError=''; S.success=''; renderAuth(); }
+
+function doLogin(e){
+  e.preventDefault();
+  const email=document.getElementById('lemail').value;
+  const pwd=document.getElementById('lpwd').value;
+  const acc=S.accounts.find(a=>a.email===email&&a.password===pwd&&a.role===S.authRole);
+  if(acc){ S.auth={name:acc.name,email:acc.email,role:acc.role}; S.authError=''; S.success=''; S.page='dashboard'; render(); }
+  else { S.authError='Invalid credentials. Use the hint above.'; renderAuth(); }
+}
+
+function doSignup(e){
+  e.preventDefault();
+  const name=document.getElementById('sname').value;
+  const email=document.getElementById('semail').value;
+  const pwd=document.getElementById('spwd').value;
+  const pwd2=document.getElementById('spwd2').value;
+  if(pwd!==pwd2){S.authError='Passwords do not match.';renderAuth();return;}
+  if(pwd.length<6){S.authError='Password must be at least 6 characters.';renderAuth();return;}
+  if(S.accounts.find(a=>a.email===email)){S.authError='Email already registered.';renderAuth();return;}
+  S.accounts.push({name,email,password:pwd,role:S.authRole});
+  S.success='Account created! You can now sign in.'; S.authError='';
+  S.authScreen='login'; renderAuth();
+}
+
+function doForgot(e){
+  e.preventDefault();
+  const email=document.getElementById('femail').value;
+  const acc=S.accounts.find(a=>a.email===email);
+  if(acc){S.success=`Reset link sent! (Demo: your password is "${acc.password}")`;}
+  else{S.authError='No account found with this email.';}
+  S.authError=acc?'':'No account found with this email.';
+  renderAuth();
+}
+
+function genPwd(){
+  const chars='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$!';
+  let p='';for(let i=0;i<12;i++)p+=chars[Math.floor(Math.random()*chars.length)];
+  const s=document.getElementById('spwd'); const s2=document.getElementById('spwd2');
+  if(s){s.value=p;s.type='text';setTimeout(()=>{s.type='password'},2000);}
+  if(s2)s2.value=p;
+}
+
+function logout(){ S.auth=null; S.authScreen='login'; S.success=''; S.authError=''; render(); }
+
+// ── SIDEBAR ───────────────────────────────────────────
+const NAV_CONFIG = [
+  {key:'users',   icon:'👥',  label:'User Management',  page:'users',   children:[]},
+  {key:'docs',    icon:'📁',  label:'Document Management', children:[
+    {page:'documents',icon:'📄',label:'Upload & Search'},
+  ]},
+  {key:'leave',   icon:'📋',  label:'Leave & Certificates', children:[
+    {page:'leave',icon:'🗓️',label:'Leave Requests'},
+    {page:'od',  icon:'📝',label:'OD / Bonafide'},
+    {page:'certs',icon:'🏅',label:'Certificates'},
+  ]},
+  {key:'schol',   icon:'🎓',  label:'Scholarship Module', children:[
+    {page:'sch-first',icon:'⭐',label:'First Graduate'},
+    {page:'sch-bcmbc',icon:'📜',label:'BC / MBC'},
+    {page:'sch-post', icon:'📜',label:'Post Matric'},
+    {page:'sch-res',  icon:'📜',label:'7.5% Reservation'},
+    {page:'sch-merit',icon:'🏆',label:'Merit'},
+    {page:'sch-fee',  icon:'💰',label:'Fee Concession'},
+  ]},
+  {key:'tt',      icon:'📅',  label:'Timetable',         children:[
+    {page:'timetable',icon:'⚙️',label:'Auto Generator'},
+  ]},
+  {key:'exam',    icon:'📊',  label:'Examination',       children:[
+    {page:'examination',icon:'📝',label:'Manage Exams'},
+  ]},
+  {key:'sets',    icon:'⚙️',  label:'Settings',          children:[
+    {page:'settings',icon:'🛠️',label:'Preferences'},
+  ]},
+];
+
+function renderSidebar(){
+  const col=S.sbCol;
+  const sb=document.getElementById('sidebar');
+  sb.className='sidebar'+(col?' col':'');
+  document.getElementById('sbRole').textContent=(S.auth?.role||'').toUpperCase()+' PANEL';
+  document.getElementById('sbBrand').style.display=col?'none':'flex';
+  document.getElementById('uInfo').style.display=col?'none':'block';
+  const role=S.auth?.role;
+  const icon=role==='admin'?'🛡️':role==='staff'?'👨‍💼':'🎓';
+  document.getElementById('uAvatar').textContent=icon;
+  document.getElementById('uName').textContent=S.auth?.name||'';
+  document.getElementById('uRole').textContent=(role||'').toUpperCase();
+  document.getElementById('tbIcon').textContent=icon;
+  document.getElementById('tbName').textContent=S.auth?.name||'';
+
+  let html=`<div class="nav-item ${S.page==='dashboard'?'on':''}" onclick="goto('dashboard')">
+    <span class="ni">📊</span>${!col?'<span class="nl">Dashboard</span>':''}
+  </div>`;
+
+  for(const grp of NAV_CONFIG){
+    const hasChildren=grp.children&&grp.children.length>0;
+    // Check if any child is accessible
+    let accessible=false;
+    if(!hasChildren){
+      accessible=canAccess(grp.page||grp.key);
+    } else {
+      accessible=grp.children.some(c=>canAccess(c.page));
+    }
+    if(!accessible) continue;
+
+    if(!hasChildren){
+      html+=`<div class="nav-item ${S.page===grp.page?'on':''}" onclick="goto('${grp.page}')">
+        <span class="ni">${grp.icon}</span>${!col?`<span class="nl">${grp.label}</span>`:''}
+      </div>`;
+    } else {
+      const open=S.openGroups[grp.key];
+      html+=`<div class="nav-item" onclick="toggleGroup('${grp.key}')">
+        <span class="ni">${grp.icon}</span>
+        ${!col?`<span class="nl">${grp.label}</span><span class="nc ${open?'open':''}">▾</span>`:''}
+      </div>`;
+      if(!col&&open){
+        for(const c of grp.children){
+          if(!canAccess(c.page)) continue;
+          html+=`<div class="nav-child ${S.page===c.page?'on':''}" onclick="goto('${c.page}')">
+            <span class="nci">${c.icon}</span><span>${c.label}</span>
+          </div>`;
+        }
+      }
+    }
+  }
+  document.getElementById('sbNav').innerHTML=html;
+}
+
+function toggleSidebar(){ S.sbCol=!S.sbCol; renderSidebar(); }
+function toggleGroup(k){ S.openGroups[k]=!S.openGroups[k]; renderSidebar(); }
+function goto(page){
+  if(!canAccess(page)&&page!=='dashboard'){
+    showAlert('Access Denied','You do not have permission to access this section.','info'); return;
+  }
+  S.page=page; renderSidebar(); renderPage();
+  const names={dashboard:'Dashboard',users:'User Management',documents:'Document Management',leave:'Leave Requests',od:'OD / Bonafide',certs:'Certificate Requests','sch-first':'First Graduate Scholarship','sch-bcmbc':'BC/MBC Scholarship','sch-post':'Post Matric Scholarship','sch-res':'7.5% Reservation','sch-merit':'Merit Scholarship','sch-fee':'Fee Concession','timetable':'Timetable Generator',examination:'Examination',settings:'Settings'};
+  document.getElementById('breadcrumb').textContent=names[page]||page;
+}
+
+// ── TOPBAR / NOTIF ────────────────────────────────────
+function renderTopbar(){
+  const role=S.auth?.role;
+  document.getElementById('tbIcon').textContent=role==='admin'?'🛡️':role==='staff'?'👨‍💼':'🎓';
+  document.getElementById('tbName').textContent=S.auth?.name||'';
+}
+
+function renderNotifs(){
+  const unread=S.notifications.filter(n=>!n.read).length;
+  document.getElementById('ndot').style.display=unread>0?'block':'none';
+  const list=document.getElementById('nlist');
+  if(!S.notifications.length){ list.innerHTML=`<div class="ndrop-empty">🎉 No new notifications</div>`; return; }
+  list.innerHTML=S.notifications.map(n=>`
+    <div class="nitem ${n.read?'':'unread'}" onclick="readNotif(${n.id})">
+      <span class="nitem-ico">${n.icon}</span>
+      <div><div class="nitem-text">${n.text}</div><div class="nitem-time">${n.time}</div></div>
+    </div>`).join('');
+}
+
+function toggleNotif(){
+  S.notifOpen=!S.notifOpen;
+  document.getElementById('ndrop').className='ndrop'+(S.notifOpen?' open':'');
+}
+
+function readNotif(id){
+  const n=S.notifications.find(n=>n.id===id);
+  if(n)n.read=true;
+  renderNotifs();
+}
+
+function clearNotifs(){
+  S.notifications=[];
+  renderNotifs();
+  toggleNotif();
+}
+
+// Close notif on outside click
+document.addEventListener('click',function(e){
+  if(S.notifOpen && !document.getElementById('notifBtn').contains(e.target) && !document.getElementById('ndrop').contains(e.target)){
+    S.notifOpen=false;
+    document.getElementById('ndrop').className='ndrop';
+  }
+});
+
+// ── PAGES ─────────────────────────────────────────────
+function renderPage(){
+  const pw=document.getElementById('pageWrap');
+  const role=S.auth?.role;
+  const isAdmin=role==='admin';
+  const isHOD=role==='hod';
+
+  if(S.page==='dashboard')     { pw.innerHTML=pageDashboard(); bindDashboard(); }
+  else if(S.page==='users')    { pw.innerHTML=pageUsers(); }
+  else if(S.page==='documents'){ pw.innerHTML=pageDocs(); }
+  else if(S.page==='leave')    { pw.innerHTML=pageLeave('leave'); }
+  else if(S.page==='od')       { pw.innerHTML=pageLeave('od'); }
+  else if(S.page==='certs')    { pw.innerHTML=pageLeave('certs'); }
+  else if(S.page.startsWith('sch-')){ pw.innerHTML=pageScholarship(S.page); }
+  else if(S.page==='timetable'){ pw.innerHTML=pageTimetable(); }
+  else if(S.page==='examination'){ pw.innerHTML=pageExam(); }
+  else if(S.page==='settings') { pw.innerHTML=pageSettings(); }
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+function pageDashboard(){
+  const pending=S.leaves.filter(l=>l.status==='pending').length;
+  return `<div class="page">
+  <div class="ph"><div><div class="pt">📊 Dashboard</div><div class="ps">Welcome back, ${S.auth?.name}! Here's your overview.</div></div></div>
+  <div class="stats">
+    <div class="sc" style="border-top:3px solid #2563eb"><div class="sico" style="background:#eff6ff;color:#2563eb">👨‍🎓</div><div><div class="sv">1,254</div><div class="sl">Total Students</div><div class="sch">↑ 12 this month</div></div></div>
+    <div class="sc" style="border-top:3px solid #d97706"><div class="sico" style="background:#fffbeb;color:#d97706">📋</div><div><div class="sv">${pending}</div><div class="sl">Pending Leaves</div><div class="sch">Needs attention</div></div></div>
+    <div class="sc" style="border-top:3px solid #16a34a"><div class="sico" style="background:#f0fdf4;color:#16a34a">🎓</div><div><div class="sv">432</div><div class="sl">Scholarships Applied</div><div class="sch">↑ 28 this semester</div></div></div>
+    <div class="sc" style="border-top:3px solid #dc2626"><div class="sico" style="background:#fef2f2;color:#dc2626">⚠️</div><div><div class="sv">24</div><div class="sl">Low Attendance</div><div class="sch">Requires action</div></div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><span class="ct">🤖 Student Performance Prediction</span></div>
+      <div class="cb">
+        <div class="fg"><label class="fl">Past Marks (comma separated)</label>
+          <input class="fi no" id="dmk" value="72, 68, 55, 60, 75, 75" /></div>
+        <div class="fg"><label class="fl">Attendance %</label>
+          <input class="fi no" id="datt" value="82" /></div>
+        <button class="btn btn-p" onclick="predict()">🔮 Predict Performance</button>
+        <div id="predResult"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">📁 Recent Documents</span></div>
+      <div class="cb p0">
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>Action</th></tr></thead>
+          <tbody>${S.docs.slice(0,4).map(d=>`<tr><td class="tm">${d.name}</td><td><span class="badge">${d.type}</span></td><td><button class="btn btn-p btn-xs" onclick="dlFile('${d.name}.txt','Document: ${d.name}\\nType: ${d.type}\\nDept: ${d.dept}')">⬇️ Download</button></td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">📋 Leave Approvals</span></div>
+      <div class="cb p0">
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="dleaves">${renderDashLeaves()}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">📊 Attendance Overview</span></div>
+      <div class="cb">
+        <svg width="100%" height="140" viewBox="0 0 400 140">
+          ${[72,68,75,80,78,85].map((v,i)=>`
+            <rect x="${30+i*60}" y="${140-v*1.4}" width="40" height="${v*1.4}" fill="#2563eb" rx="4" opacity="${.5+i*.1}"/>
+            <text x="${50+i*60}" y="136" text-anchor="middle" font-size="10" fill="#94a3b8">${['Jan','Feb','Mar','Apr','May','Jun'][i]}</text>
+            <text x="${50+i*60}" y="${140-v*1.4-4}" text-anchor="middle" font-size="10" fill="#475569">${v}%</text>
+          `).join('')}
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderDashLeaves(){
+  return S.leaves.slice(0,4).map(l=>`<tr>
+    <td class="tm">${l.name}</td>
+    <td><span class="badge">${l.type}</span></td>
+    <td><span class="sbadge ${l.status}">${l.status}</span></td>
+    <td>${l.status==='pending'?`<div class="abts">
+      <button class="btn btn-ok btn-xs" onclick="dashLeaveAction(${l.id},'approved')">✅</button>
+      <button class="btn btn-err btn-xs" onclick="dashLeaveAction(${l.id},'rejected')">✖</button>
+    </div>`:''}</td>
+  </tr>`).join('');
+}
+
+function bindDashboard(){}
+
+function predict(){
+  const marks=document.getElementById('dmk').value.split(',').map(m=>parseFloat(m)).filter(n=>!isNaN(n));
+  const att=parseFloat(document.getElementById('datt').value)||0;
+  if(!marks.length)return;
+  const avg=marks.reduce((s,x)=>s+x,0)/marks.length;
+  let cls,txt;
+  if(avg<60||att<75){cls='risk';txt='At Risk — Student needs academic counseling.';}
+  else if(avg>=80&&att>=85){cls='excellent';txt='Excellent — Student is performing exceptionally!';}
+  else{cls='average';txt='Average — Student is on track. Keep monitoring.';}
+  document.getElementById('predResult').innerHTML=`<div class="pred ${cls}" style="margin-top:10px"><strong>Result:</strong> ${txt}</div>`;
+}
+
+function dashLeaveAction(id,status){
+  const l=S.leaves.find(l=>l.id===id); if(l)l.status=status;
+  document.getElementById('dleaves').innerHTML=renderDashLeaves();
+  addNotif('📋',`Leave ${status} for ${l?.name}`);
+}
+
+// ── DOCUMENTS ─────────────────────────────────────────
+function pageDocs(){
+  const isAdmin=S.auth?.role==='admin';
+  const types=['All',...DOC_TYPES]; const depts=['All',...DEPTS];
+  const filtered=S.docs.filter(d=>{
+    const s=d.name.toLowerCase().includes(S.docSearch.toLowerCase())||d.type.toLowerCase().includes(S.docSearch.toLowerCase());
+    const t=S.docType==='All'||d.type===S.docType;
+    const dept=S.docDept==='All'||d.dept===S.docDept;
+    return s&&t&&dept;
+  });
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">📁 Document Management</div>
+    ${isAdmin?`<button class="btn btn-p" onclick="openDocModal()">+ Add Document</button>`:''}
+  </div>
+  <div class="card">
+    <div class="ch">
+      <span class="ct">All Documents (${filtered.length})</span>
+      <div class="frow">
+        <select class="fi sm no" onchange="S.docType=this.value;renderPage()">${types.map(t=>`<option ${S.docType===t?'selected':''}>${t}</option>`).join('')}</select>
+        <select class="fi sm no" onchange="S.docDept=this.value;renderPage()">${depts.map(d=>`<option ${S.docDept===d?'selected':''}>${d}</option>`).join('')}</select>
+        <input class="fi sm no" placeholder="🔍 Search..." value="${S.docSearch}" oninput="S.docSearch=this.value;renderPage()" />
+      </div>
+    </div>
+    <div class="cb p0">
+      <table>
+        <thead><tr><th>#</th><th>Name</th><th>Type</th><th>Dept</th><th>Date</th><th>Size</th><th>Actions</th></tr></thead>
+        <tbody>${filtered.length?filtered.map((d,i)=>`<tr>
+          <td class="ts">${i+1}</td><td class="tm">${d.name}</td>
+          <td><span class="badge">${d.type}</span></td>
+          <td><span class="badge a">${d.dept}</span></td>
+          <td class="ts">${d.date}</td><td class="ts">${d.size}</td>
+          <td><div class="abts">
+            ${isAdmin?`<button class="btn btn-xs btn-g" onclick="openDocModal(${d.id})">✏️ Edit</button>`:''}
+            <button class="btn btn-xs btn-p" onclick="dlFile('${d.name}.txt','Name: ${d.name}\\nType: ${d.type}\\nDept: ${d.dept}\\nDate: ${d.date}')">⬇️</button>
+            ${isAdmin?`<button class="btn btn-xs btn-err" onclick="deleteDoc(${d.id})">🗑️</button>`:''}
+          </div></td>
+        </tr>`).join(''):`<tr><td colspan="7" class="empty">No documents found</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  </div></div>`;
+}
+
+function openDocModal(id){
+  const doc=id?S.docs.find(d=>d.id===id):null;
+  openModal(doc?'Edit Document':'Add Document',`
+    <div class="fg"><label class="fl">Name</label><input class="fi no" id="mdn" value="${doc?.name||''}" placeholder="Student/Staff name"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Document Type</label>
+        <select class="fi no" id="mdt">${DOC_TYPES.map(t=>`<option ${doc?.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="mdd">${DEPTS.map(d=>`<option ${doc?.dept===d?'selected':''}>${d}</option>`).join('')}</select></div>
+    </div>`,
+    ()=>{
+      const name=document.getElementById('mdn').value;
+      const type=document.getElementById('mdt').value;
+      const dept=document.getElementById('mdd').value;
+      if(!name)return;
+      if(doc){ doc.name=name;doc.type=type;doc.dept=dept; }
+      else { S.docs.unshift({id:Date.now(),name,type,dept,date:today(),size:'200 KB'}); addNotif('📁',`New document added: ${name}`); }
+      closeModal(); renderPage();
+    });
+}
+function deleteDoc(id){ S.docs=S.docs.filter(d=>d.id!==id); renderPage(); }
+
+// ── LEAVE ─────────────────────────────────────────────
+function pageLeave(type){
+  const role=S.auth?.role;
+  const canEdit=role==='admin'||role==='hod';
+  const typeMap={leave:['Medical Leave','Casual Leave','Emergency Leave'],od:['OD Request','Bonafide Request'],certs:['Bonafide Certificate','Transfer Certificate','Course Completion']};
+  const titles={leave:'Leave Requests',od:'OD / Bonafide Requests',certs:'Certificate Requests'};
+  const ltypes=typeMap[type];
+  const filtered=S.leaves.filter(l=>ltypes.includes(l.type));
+
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">📋 ${titles[type]}</div>
+    <button class="btn btn-p" onclick="openLeaveModal(null,'${type}')">+ Add Request</button>
+  </div>
+  <div class="mstats">
+    ${['pending','approved','rejected'].map(s=>`<div class="ms ${s}"><div class="msv">${S.leaves.filter(l=>l.status===s).length}</div><div class="msl">${s}</div></div>`).join('')}
+  </div>
+  <div class="card"><div class="cb p0">
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th>Dept</th><th>Role</th><th>From</th><th>To</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>${(filtered.length?filtered:S.leaves).map(r=>`<tr>
+        <td class="tm">${r.name}</td>
+        <td><span class="badge">${r.type}</span></td>
+        <td><span class="badge a">${r.dept}</span></td>
+        <td class="ts">${r.role}</td>
+        <td class="ts">${r.from}</td><td class="ts">${r.to}</td>
+        <td><span class="sbadge ${r.status}">${r.status}</span></td>
+        <td><div class="abts">
+          <button class="btn btn-xs btn-g" onclick="openLeaveModal(${r.id},'${type}')">✏️ Edit</button>
+          ${canEdit&&r.status==='pending'?`
+            <button class="btn btn-xs btn-ok" onclick="leaveAction(${r.id},'approved')">✅ Approve</button>
+            <button class="btn btn-xs btn-err" onclick="leaveAction(${r.id},'rejected')">✖ Reject</button>
+          `:canEdit?`<button class="btn btn-xs btn-g" onclick="leaveAction(${r.id},'pending')">↩ Reset</button>`:''}
+        </div></td>
+      </tr>`).join('')}
+      </tbody>
+    </table>
+  </div></div></div>`;
+}
+
+function leaveAction(id,status){
+  const r=S.leaves.find(l=>l.id===id); if(r)r.status=status;
+  if(status!=='pending') addNotif('📋',`Leave ${status} for ${r?.name}`);
+  renderPage();
+}
+
+function openLeaveModal(id,type){
+  const r=id?S.leaves.find(l=>l.id===id):null;
+  const typeMap={leave:['Medical Leave','Casual Leave','Emergency Leave'],od:['OD Request','Bonafide Request'],certs:['Bonafide Certificate','Transfer Certificate','Course Completion']};
+  const ltypes=typeMap[type];
+  openModal(r?'Edit Request':'Add Request',`
+    <div class="fg"><label class="fl">Full Name</label><input class="fi no" id="lmn" value="${r?.name||''}" placeholder="Name"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Type</label>
+        <select class="fi no" id="lmt">${ltypes.map(t=>`<option ${r?.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="lmd">${DEPTS.map(d=>`<option ${r?.dept===d?'selected':''}>${d}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Role</label>
+        <select class="fi no" id="lmr"><option ${r?.role==='Student'?'selected':''}>Student</option><option ${r?.role==='Staff'?'selected':''}>Staff</option></select></div>
+    </div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">From</label><input type="date" class="fi no" id="lmf" value="${r?.from||''}"/></div>
+      <div class="fg"><label class="fl">To</label><input type="date" class="fi no" id="lmto" value="${r?.to||''}"/></div>
+    </div>`,
+    ()=>{
+      const name=document.getElementById('lmn').value;
+      if(!name)return;
+      const obj={name,type:document.getElementById('lmt').value,dept:document.getElementById('lmd').value,role:document.getElementById('lmr').value,from:document.getElementById('lmf').value,to:document.getElementById('lmto').value,status:r?.status||'pending'};
+      if(r){Object.assign(r,obj);}else{S.leaves.unshift({id:Date.now(),...obj}); addNotif('📋',`New request from ${name}`);}
+      closeModal(); renderPage();
+    });
+}
+
+// ── SCHOLARSHIP ───────────────────────────────────────
+function pageScholarship(key){
+  const d=S.scholarships[key];
+  if(!d)return`<div class="page"><div class="pt">Not found</div></div>`;
+  const role=S.auth?.role;
+  const canApprove=role==='admin'||role==='hod';
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">🎓 ${d.title}</div>
+    <button class="btn btn-p" onclick="openSchModal('${key}',null)">+ New Application</button>
+  </div>
+  <div class="sch-info">
+    <div class="ii2"><span class="ii2ico">📝</span><div><div class="iil">Description</div><div class="iiv">${d.desc}</div></div></div>
+    <div class="ii2"><span class="ii2ico">✅</span><div><div class="iil">Eligibility</div><div class="iiv">${d.eligibility}</div></div></div>
+    <div class="ii2"><span class="ii2ico">💰</span><div><div class="iil">Amount</div><div class="iiv hi">${d.amount}</div></div></div>
+  </div>
+  <div class="mstats">
+    ${['pending','approved','rejected'].map(s=>`<div class="ms ${s}"><div class="msv">${d.apps.filter(a=>a.status===s).length}</div><div class="msl">${s}</div></div>`).join('')}
+  </div>
+  <div class="card"><div class="cb p0">
+    <table>
+      <thead><tr><th>Name</th><th>Roll No.</th><th>Dept</th><th>Income</th><th>Marks</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>${d.apps.map(a=>`<tr>
+        <td class="tm">${a.name}</td><td class="ts">${a.roll}</td>
+        <td><span class="badge a">${a.dept}</span></td>
+        <td class="ts">${a.income}</td><td class="ts">${a.marks}</td>
+        <td><span class="sbadge ${a.status}">${a.status}</span></td>
+        <td><div class="abts">
+          <button class="btn btn-xs btn-g" onclick="openSchModal('${key}',${a.id})">✏️ Edit</button>
+          ${canApprove&&a.status==='pending'?`
+            <button class="btn btn-xs btn-ok" onclick="schAction('${key}',${a.id},'approved')">✅ Approve</button>
+            <button class="btn btn-xs btn-err" onclick="schAction('${key}',${a.id},'rejected')">✖ Reject</button>
+          `:canApprove?`<button class="btn btn-xs btn-g" onclick="schAction('${key}',${a.id},'pending')">↩ Reset</button>`:''}
+        </div></td>
+      </tr>`).join('')||`<tr><td colspan="7" class="empty">No applications yet</td></tr>`}
+      </tbody>
+    </table>
+  </div></div></div>`;
+}
+
+function schAction(key,id,status){
+  const a=S.scholarships[key]?.apps.find(a=>a.id===id); if(a){a.status=status; if(status!=='pending')addNotif('🎓',`Scholarship ${status} for ${a.name}`);}
+  renderPage();
+}
+
+function openSchModal(key,id){
+  const d=S.scholarships[key];
+  const a=id?d.apps.find(a=>a.id===id):null;
+  openModal(a?'Edit Application':'New Application',`
+    <div class="frow2">
+      <div class="fg"><label class="fl">Student Name</label><input class="fi no" id="smn" value="${a?.name||''}" placeholder="Full name"/></div>
+      <div class="fg"><label class="fl">Roll Number</label><input class="fi no" id="smr" value="${a?.roll||''}" placeholder="e.g. 22CS001"/></div>
+    </div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="smd">${DEPTS.map(dp=>`<option ${a?.dept===dp?'selected':''}>${dp}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Family Income</label><input class="fi no" id="smi" value="${a?.income||''}" placeholder="e.g. ₹2.5L"/></div>
+      <div class="fg"><label class="fl">Marks %</label><input class="fi no" id="smk" value="${a?.marks||''}" placeholder="e.g. 78%"/></div>
+    </div>`,
+    ()=>{
+      const name=document.getElementById('smn').value,roll=document.getElementById('smr').value;
+      if(!name||!roll)return;
+      const obj={name,roll,dept:document.getElementById('smd').value,income:document.getElementById('smi').value,marks:document.getElementById('smk').value};
+      if(a){Object.assign(a,obj);}else{d.apps.push({id:Date.now(),...obj,status:'pending'}); addNotif('🎓',`New scholarship application from ${name}`);}
+      closeModal(); renderPage();
+    });
+}
+
+// ── USERS ─────────────────────────────────────────────
+function pageUsers(){
+  const isAdmin=S.auth?.role==='admin';
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">👥 User Management</div>
+    ${isAdmin?`<button class="btn btn-p" onclick="openUserModal(null)">+ Add User</button>`:'<span class="role-tag rt-staff">View Only</span>'}
+  </div>
+  <div class="card"><div class="cb p0">
+    ${S.users.map(u=>`<div class="ucard">
+      <div class="uca">${u.role==='Admin'?'🛡️':u.role==='HOD'?'🎓':'👨‍💼'}</div>
+      <div style="flex:1;min-width:0">
+        <div class="ucn">${u.name}</div>
+        <div class="ucr">${u.role} · ${u.dept} · ${u.email}</div>
+      </div>
+      <span class="sbadge ${u.status==='active'?'approved':'rejected'}">${u.status}</span>
+      ${isAdmin?`<div class="abts">
+        <button class="btn btn-xs btn-g" onclick="openUserModal(${u.id})">✏️ Edit</button>
+        <button class="btn btn-xs btn-err" onclick="deleteUser(${u.id})">🗑️</button>
+      </div>`:''}
+    </div>`).join('')}
+  </div></div></div>`;
+}
+
+function openUserModal(id){
+  const u=id?S.users.find(u=>u.id===id):null;
+  openModal(u?'Edit User':'Add User',`
+    <div class="fg"><label class="fl">Full Name</label><input class="fi no" id="umn" value="${u?.name||''}" placeholder="Full name"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Role</label>
+        <select class="fi no" id="umr"><option ${u?.role==='Admin'?'selected':''}>Admin</option><option ${u?.role==='Staff'?'selected':''}>Staff</option><option ${u?.role==='HOD'?'selected':''}>HOD</option></select></div>
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="umd">${[...DEPTS,'Administration'].map(d=>`<option ${u?.dept===d?'selected':''}>${d}</option>`).join('')}</select></div>
+    </div>
+    <div class="fg"><label class="fl">Email</label><input type="email" class="fi no" id="ume" value="${u?.email||''}" placeholder="email@college.edu"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Phone</label><input class="fi no" id="ump" value="${u?.phone||''}" placeholder="Phone"/></div>
+      <div class="fg"><label class="fl">Status</label>
+        <select class="fi no" id="ums"><option value="active" ${u?.status==='active'?'selected':''}>Active</option><option value="inactive" ${u?.status==='inactive'?'selected':''}>Inactive</option></select></div>
+    </div>`,
+    ()=>{
+      const name=document.getElementById('umn').value,email=document.getElementById('ume').value;
+      if(!name||!email)return;
+      const obj={name,role:document.getElementById('umr').value,dept:document.getElementById('umd').value,email,phone:document.getElementById('ump').value,status:document.getElementById('ums').value};
+      if(u){Object.assign(u,obj);}else{S.users.push({id:Date.now(),...obj}); addNotif('👥',`New user added: ${name}`);}
+      closeModal(); renderPage();
+    });
+}
+function deleteUser(id){ S.users=S.users.filter(u=>u.id!==id); renderPage(); }
+
+// ── TIMETABLE ─────────────────────────────────────────
+function pageTimetable(){
+  const isAdmin=S.auth?.role==='admin';
+  const SUBJECTS={CSE:['DS','DBMS','OS','CN','SE','ML','WEB'],ECE:['SS','EC','DSP','VLSI','EMF','CN','ES'],MECH:['TD','FM','ME','MFG','DM','HT','CAD'],IT:['WEB','SE','DBMS','AI','CN','IoT','SEC'],CIVIL:['SM','FM','GE','TE','SD','HE','CM']};
+  const days=['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  const periods=['9-10','10-11','11-12','12-1(Lunch)','1-2','2-3','3-4'];
+  return `<div class="page">
+  <div class="ph"><div class="pt">📅 Timetable Generator</div>${!isAdmin?'<span class="role-tag rt-hod">View Only</span>':''}</div>
+  <div class="card"><div class="cb">
+    <div class="frow" style="margin-bottom:16px;gap:12px">
+      <div class="fg" style="margin:0;flex:1;max-width:200px"><label class="fl">Department</label>
+        <select class="fi no" id="ttd" onchange="S.ttDept=this.value;S.ttTable=null;renderPage()">${DEPTS.map(d=>`<option ${S.ttDept===d?'selected':''}>${d}</option>`).join('')}</select></div>
+      <div class="fg" style="margin:0;flex:1;max-width:180px"><label class="fl">Semester</label>
+        <select class="fi no" id="tts" onchange="S.ttSem=this.value;S.ttTable=null;renderPage()">${SEMS.map(s=>`<option ${S.ttSem===s?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div style="align-self:flex-end"><button class="btn btn-p" onclick="genTT()">⚙️ Generate</button></div>
+    </div>
+    ${S.ttTable?`<div style="overflow-x:auto"><table>
+      <thead><tr><th>Day / Period</th>${periods.map(p=>`<th>${p}</th>`).join('')}</tr></thead>
+      <tbody>${days.map((day,di)=>`<tr><td class="tm">${day}</td>${S.ttTable[di].map((subj,pi)=>`<td class="ttcell ${subj==='LUNCH'?'lunch':''}">${subj}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table></div>`:`<div class="empty">Click "Generate" to create a timetable for ${S.ttDept} — ${S.ttSem} Semester</div>`}
+  </div></div></div>`;
+}
+
+function genTT(){
+  const SUBJECTS={CSE:['DS','DBMS','OS','CN','SE','ML','WEB'],ECE:['SS','EC','DSP','VLSI','EMF','CN','ES'],MECH:['TD','FM','ME','MFG','DM','HT','CAD'],IT:['WEB','SE','DBMS','AI','CN','IoT','SEC'],CIVIL:['SM','FM','GE','TE','SD','HE','CM']};
+  const subjs=SUBJECTS[S.ttDept]||SUBJECTS.CSE;
+  const days=5,periods=7;
+  S.ttTable=Array.from({length:days},()=>Array.from({length:periods},(_,pi)=>pi===3?'LUNCH':subjs[Math.floor(Math.random()*subjs.length)]));
+  renderPage();
+}
+
+// ── EXAMINATION ───────────────────────────────────────
+function pageExam(){
+  const isAdmin=S.auth?.role==='admin';
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">📊 Examination Management</div>
+    ${isAdmin?`<button class="btn btn-p" onclick="openExamModal(null)">+ Schedule Exam</button>`:'<span class="role-tag rt-staff">View Only</span>'}
+  </div>
+  <div class="card"><div class="cb p0">
+    <table>
+      <thead><tr><th>#</th><th>Subject</th><th>Dept</th><th>Sem</th><th>Date</th><th>Time</th><th>Hall</th><th>Students</th><th>Actions</th></tr></thead>
+      <tbody>${S.exams.map((e,i)=>`<tr>
+        <td class="ts">${i+1}</td><td class="tm">${e.subject}</td>
+        <td><span class="badge a">${e.dept}</span></td>
+        <td class="ts">${e.sem}</td><td class="ts">${e.date}</td><td class="ts">${e.time}</td>
+        <td class="ts">${e.hall}</td><td class="ts">${e.students}</td>
+        <td><div class="abts">
+          ${isAdmin?`<button class="btn btn-xs btn-g" onclick="openExamModal(${e.id})">✏️ Edit</button>`:''}
+          <button class="btn btn-xs btn-p" onclick="dlFile('${e.subject}.txt','Exam: ${e.subject}\\nDept: ${e.dept}\\nDate: ${e.date}\\nHall: ${e.hall}')">⬇️ Export</button>
+          ${isAdmin?`<button class="btn btn-xs btn-err" onclick="deleteExam(${e.id})">🗑️</button>`:''}
+        </div></td>
+      </tr>`).join('')}
+      </tbody>
+    </table>
+  </div></div></div>`;
+}
+
+function openExamModal(id){
+  const e=id?S.exams.find(e=>e.id===id):null;
+  openModal(e?'Edit Exam':'Schedule Exam',`
+    <div class="fg"><label class="fl">Subject Name</label><input class="fi no" id="esn" value="${e?.subject||''}" placeholder="e.g. Data Structures"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="esdp">${DEPTS.map(d=>`<option ${e?.dept===d?'selected':''}>${d}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Semester</label>
+        <select class="fi no" id="ess">${SEMS.map(s=>`<option ${e?.sem===s?'selected':''}>${s}</option>`).join('')}</select></div>
+    </div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Date</label><input type="date" class="fi no" id="esd" value="${e?.date||''}"/></div>
+      <div class="fg"><label class="fl">Time</label><input class="fi no" id="est" value="${e?.time||'9:00 AM'}" placeholder="9:00 AM"/></div>
+    </div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Hall No.</label><input class="fi no" id="esh" value="${e?.hall||''}" placeholder="e.g. A101"/></div>
+      <div class="fg"><label class="fl">No. of Students</label><input type="number" class="fi no" id="esst" value="${e?.students||60}"/></div>
+    </div>`,
+    ()=>{
+      const subject=document.getElementById('esn').value;
+      if(!subject)return;
+      const obj={subject,dept:document.getElementById('esdp').value,sem:document.getElementById('ess').value,date:document.getElementById('esd').value,time:document.getElementById('est').value,hall:document.getElementById('esh').value,students:parseInt(document.getElementById('esst').value)||60};
+      if(e){Object.assign(e,obj);}else{S.exams.push({id:Date.now(),...obj}); addNotif('📊',`Exam scheduled: ${subject}`);}
+      closeModal(); renderPage();
+    });
+}
+function deleteExam(id){ S.exams=S.exams.filter(e=>e.id!==id); renderPage(); }
+
+// ── SETTINGS ──────────────────────────────────────────
+function pageSettings(){
+  const st=S.settings;
+  return `<div class="page">
+  <div class="ph"><div class="pt">⚙️ Settings</div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <div class="ch"><span class="ct">🏛️ College Information</span></div>
+      <div class="cb">
+        <div class="fg"><label class="fl">College Name</label><input class="fi no" id="stn" value="${st.college}" /></div>
+        <div class="fg"><label class="fl">Admin Email</label><input type="email" class="fi no" id="ste" value="${st.email}" /></div>
+        <div class="fg"><label class="fl">Phone</label><input class="fi no" id="stp" value="${st.phone}" /></div>
+        <button class="btn btn-p" onclick="saveSettings()">💾 Save Changes</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">🔔 Preferences</span></div>
+      <div class="cb">
+        ${[
+          {key:'notifs',label:'Push Notifications',desc:'Alerts for leave and approvals'},
+          {key:'emails',label:'Email Alerts',desc:'Updates via email'},
+          {key:'auto',label:'Auto-Approve Leaves',desc:'Auto-approve standard leaves'},
+        ].map(p=>`<div class="pi">
+          <div><div class="pil">${p.label}</div><div class="pid">${p.desc}</div></div>
+          <label class="toggle"><input type="checkbox" ${st[p.key]?'checked':''} onchange="S.settings.${p.key}=this.checked"/><span class="ts2"></span></label>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div></div>`;
+}
+
+function saveSettings(){
+  S.settings.college=document.getElementById('stn').value;
+  S.settings.email=document.getElementById('ste').value;
+  S.settings.phone=document.getElementById('stp').value;
+  addNotif('⚙️','Settings saved successfully!');
+  alert('✅ Settings saved!');
+}
+
+// ══════════════════════════════════════════════════════
+//  MODAL SYSTEM
+// ══════════════════════════════════════════════════════
+let _modalSave=null;
+function openModal(title,body,onSave){
+  _modalSave=onSave;
+  document.getElementById('mtitle').textContent=title;
+  document.getElementById('mbody').innerHTML=body;
+  document.getElementById('mfoot').innerHTML=`
+    <button class="btn btn-g" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-p" onclick="_modalSave&&_modalSave()">Save</button>`;
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('modal'))return;
+  document.getElementById('modal').style.display='none';
+}
+
+// ══════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════
+function dlFile(name,content){
+  const b=new Blob([content],{type:'text/plain'});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');
+  a.href=u;a.download=name;a.click();
+  URL.revokeObjectURL(u);
+}
+
+function today(){
+  const d=new Date();
+  return d.toISOString().slice(0,10);
+}
+
+function addNotif(icon,text){
+  S.notifications.unshift({id:Date.now(),icon,text,time:'Just now',read:false});
+  if(S.notifications.length>10)S.notifications=S.notifications.slice(0,10);
+  renderNotifs();
+}
+
+function showAlert(title,msg,type){
+  alert(`${title}\n${msg}`);
+}
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
