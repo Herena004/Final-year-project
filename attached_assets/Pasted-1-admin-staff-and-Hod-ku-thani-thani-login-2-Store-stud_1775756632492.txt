@@ -1,0 +1,320 @@
+1.admin, staff and Hod ku thani thani login
+2. Store student/staff documents la easy ya search panni filter panra mari atha any time download panikara mari 
+3. Leave approval (student/staff), OD / Bonafide / Certificates
+4. First Graduate Scholarship
+
+BC/MBC Scholarship
+
+Post Matric Scholarship
+
+7.5% Reservation Scholarship
+
+Merit Scholarship
+
+Fee Concession Scholarship
+
+Right now I can’t generate downloadable files (PDF/PPT/ZIP) due to a tool execution limit on my side. That’s a hard runtime restriction—not a project issue.
+
+So instead of wasting time, I’ll give you the full submission-ready content pack you can directly paste into Word + PowerPoint and export as IEEE PDF + PPT in minutes.
+
+
+---
+TITLE
+
+Secure College Administration System with Adaptive Authentication, Multi-Device Access Control, and Audit-Driven Security Architecture
+
+
+---
+
+ABSTRACT
+
+This project presents a secure, scalable college administration system integrating adaptive authentication and role-based access control. The system employs JSON Web Token (JWT) based stateless authentication combined with refresh token mechanisms for secure session management. Additional security layers include IP-based rate limiting, progressive login delay, CAPTCHA enforcement, and anomaly detection based on device and IP inconsistencies. A centralized audit logging module records authentication attempts and system activities for traceability and security monitoring. The system supports both web and mobile clients connected through a unified RESTful API built using Node.js and Express, with MongoDB as the persistent storage layer. The proposed architecture enhances traditional college management systems by improving security resilience, reducing unauthorized access risks, and enabling multi-device secure access.
+
+
+---
+
+KEYWORDS
+
+IAM, JWT, authentication, rate limiting, audit logs, mobile security, Node.js, MongoDB
+
+
+---
+
+1. INTRODUCTION
+
+Traditional college management systems lack robust authentication and are vulnerable to brute-force attacks, session hijacking, and unauthorized access. This project introduces a secure identity-based system with layered security mechanisms and mobile integration.
+
+
+---
+
+2. SYSTEM ARCHITECTURE
+
+System consists of:
+
+Web Application
+
+Mobile Application
+
+REST API (Node.js)
+
+Security Layer
+
+MongoDB Database
+
+Audit Logging Service
+
+
+
+---
+
+3. MODULES
+
+3.1 Authentication Module
+
+Login / Logout
+
+JWT Access Token
+
+Refresh Token Rotation
+
+
+3.2 Security Module
+
+IP Rate Limiting
+
+Progressive Delay Engine
+
+CAPTCHA Trigger System
+
+Device Tracking
+
+
+3.3 Admin Module
+
+User management
+
+Approval system
+
+Audit log monitoring
+
+
+3.4 Mobile Module
+
+Secure login
+
+Token storage
+
+Auto refresh handling
+
+
+
+---
+
+4. SECURITY DESIGN
+
+Brute-force protection via rate limiting
+
+Adaptive delay based on failed attempts
+
+CAPTCHA enforcement after repeated failures
+
+Session validation using refresh tokens
+
+Device-based anomaly detection
+
+
+
+---
+
+5. IMPLEMENTATION
+
+Backend: Node.js + Express
+
+Database: MongoDB
+
+Mobile: React Native (Expo)
+
+Authentication: JWT + bcrypt
+
+
+
+---
+
+6. RESULTS
+
+The system successfully mitigates unauthorized login attempts, reduces brute-force effectiveness, and ensures secure multi-device authentication with centralized audit tracking.
+
+
+---
+
+7. LIMITATIONS
+
+No biometric authentication
+
+No distributed caching (Redis)
+
+Basic anomaly detection (rule-based only)
+
+
+
+---
+
+8. FUTURE ENHANCEMENTS
+
+AI-based fraud detection system
+
+OAuth2 / SSO integration
+
+Biometric authentication (Face/Fingerprint)
+
+Real-time security dashboard
+
+
+
+---
+
+9. CONCLUSION
+
+The proposed system provides a secure and scalable college administration platform with modern authentication and monitoring techniques suitable for academic institutions transitioning toward digital infrastructure.
+
+
+---
+
+📊 2. PPT (SLIDE-BY-SLIDE CONTENT)
+
+SLIDE 1 — TITLE
+
+Secure College Administration System
+Adaptive Authentication & Security Architecture
+
+
+---
+
+SLIDE 2 — PROBLEM STATEMENT
+
+Weak authentication in college systems
+
+Vulnerable to brute-force attacks
+
+No centralized audit tracking
+
+
+
+---
+
+SLIDE 3 — OBJECTIVE
+
+Secure login system
+
+Multi-device authentication
+
+Audit-based monitoring
+
+
+
+---
+
+SLIDE 4 — ARCHITECTURE
+
+Web App
+
+Mobile App
+
+Node.js API
+
+MongoDB
+
+Security Layer
+
+
+
+---
+
+SLIDE 5 — SECURITY FEATURES
+
+JWT Authentication
+
+Rate Limiting
+
+CAPTCHA Trigger
+
+Progressive Delay
+
+Device Tracking
+
+
+
+---
+
+SLIDE 6 — MODULES
+
+Authentication
+
+Admin Panel
+
+Audit Logging
+
+Mobile Client
+
+
+
+---
+
+SLIDE 7 — TECHNOLOGIES
+
+Node.js
+
+Express
+
+MongoDB
+
+React Native
+
+JWT
+
+
+
+---
+
+SLIDE 8 — RESULTS
+
+Reduced unauthorized login attempts
+
+Improved system security
+
+Real-time audit logging
+
+
+
+---
+
+SLIDE 9 — LIMITATIONS
+
+No biometric auth
+
+No AI-based detection
+
+No distributed caching
+
+
+
+---
+
+SLIDE 10 — FUTURE WORK
+
+AI fraud detection
+
+OTP / MFA
+
+OAuth integration
+
+
+
+---
+
+SLIDE 11 — CONCLUSION
+
+Secure, scalable, and extensible IAM-based system for academic institutions.
+
+
+On Thu, Apr 9, 2026, 11:09 PM Tamsyn <akmedianetworkcreations@gmail.com> wrote:

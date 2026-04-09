@@ -16,6 +16,22 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
 
+## Artifacts
+
+### College Administration System (`artifacts/college-admin`)
+- **Type**: React + Vite (frontend only, no backend needed)
+- **Preview**: `/` (root)
+- **Description**: Full college admin portal built with pure React/CSS/JS (no external UI libraries)
+- **Features**:
+  - Role-based login: Admin, Staff, HOD (separate logins)
+  - Dashboard with performance prediction, charts, live leave approvals
+  - Document management: search, filter, download
+  - Leave/OD/Bonafide/Certificate request management with approve/reject
+  - 6 Scholarship modules: First Graduate, BC/MBC, Post Matric, 7.5% Reservation, Merit, Fee Concession
+  - Timetable auto-generator
+  - Examination management
+  - Settings page
+
 ## Key Commands
 
 - `pnpm run typecheck` — full typecheck across all packages
