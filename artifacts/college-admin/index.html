@@ -1,16 +1,1407 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>College Administration System</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EduAdmin Portal – College Administration System</title>
+<style>
+/* ── RESET & BASE ─────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f4f8;--bg2:#fff;
+  --side:#1e3a5f;--side2:#254b7a;--side3:#2e6db4;--stext:#b8d0f0;
+  --acc:#2563eb;--accd:#1d4ed8;--accl:#eff6ff;
+  --ok:#16a34a;--okl:#f0fdf4;
+  --warn:#d97706;--warnl:#fffbeb;
+  --err:#dc2626;--errl:#fef2f2;
+  --tx:#1e293b;--tx2:#475569;--tx3:#94a3b8;
+  --bd:#e2e8f0;--bd2:#cbd5e1;
+  --sh:0 1px 3px rgba(0,0,0,.08);--sh2:0 4px 16px rgba(0,0,0,.12);
+  --r:10px;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Helvetica Neue',Arial,sans-serif;
+}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--tx);font-size:14px}
+
+/* ── SCROLLBAR ─────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ══════════════════════════════════════════════════════
+   AUTH
+══════════════════════════════════════════════════════ */
+.auth-page{min-height:100vh;display:flex;background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%)}
+.auth-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;color:#fff;text-align:center}
+.al-icon{font-size:72px;margin-bottom:14px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.35))}
+.al-name{font-size:30px;font-weight:700;letter-spacing:-.3px}
+.al-sub{font-size:15px;opacity:.8;margin-top:6px}
+.al-feats{margin-top:36px;display:flex;flex-direction:column;gap:13px;text-align:left;max-width:300px}
+.al-feat{display:flex;align-items:center;gap:12px;font-size:14px;opacity:.9}
+.al-feat span:first-child{font-size:22px;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+
+.auth-right{width:480px;background:#fff;display:flex;align-items:center;justify-content:center;padding:40px}
+@media(max-width:768px){.auth-left{display:none}.auth-right{width:100%}}
+.auth-box{width:100%;max-width:380px}
+.auth-title{font-size:26px;font-weight:700;color:var(--tx)}
+.auth-sub{font-size:13px;color:var(--tx2);margin-top:4px;margin-bottom:24px}
+
+/* role tabs */
+.rtabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);padding:4px;margin-bottom:22px}
+.rtab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border:none;background:transparent;border-radius:8px;cursor:pointer;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--tx2);transition:all .2s;font-family:inherit}
+.rtab .ico{font-size:22px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.2))}
+.rtab.on{background:var(--acc);color:#fff;box-shadow:var(--sh)}
+.rtab:hover:not(.on){background:var(--bd)}
+
+/* form elements */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fl{font-size:12px;font-weight:600;color:var(--tx2);letter-spacing:.02em}
+.iw{position:relative}
+.ii{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--tx3)}
+.fi{width:100%;padding:10px 12px 10px 36px;border:1.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:inherit;color:var(--tx);background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.fi.no{padding-left:12px}
+.fi:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.fi.sm{padding:7px 10px;font-size:12px}
+select.fi{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+textarea.fi{resize:vertical;padding-top:10px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;white-space:nowrap;text-decoration:none}
+.bp{background:var(--acc);color:#fff}.bp:hover{background:var(--accd)}
+.bok{background:var(--ok);color:#fff}.bok:hover{filter:brightness(1.1)}
+.berr{background:var(--err);color:#fff}.berr:hover{filter:brightness(1.1)}
+.bout{background:transparent;color:var(--acc);border:1.5px solid var(--acc)}.bout:hover{background:var(--accl)}
+.bg2{background:var(--bg);color:var(--tx2);border:1px solid var(--bd2)}.bg2:hover{background:var(--bd)}
+.bxs{padding:5px 9px;font-size:11px;border-radius:6px}
+.bsm{padding:7px 14px;font-size:12px}
+.bfull{width:100%}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+
+.sp{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* auth misc */
+.aerr{background:var(--errl);border:1px solid #fecaca;color:var(--err);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.asuc{background:var(--okl);border:1px solid #bbf7d0;color:var(--ok);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.ahint{background:var(--accl);border:1px solid #bfdbfe;color:var(--acc);border-radius:8px;padding:10px 12px;font-size:12px;margin-bottom:14px;font-weight:500}
+.alink{font-size:13px;color:var(--tx2);margin-bottom:10px;text-align:center}
+.alink a{color:var(--acc);font-weight:600;cursor:pointer}
+.alink a:hover{text-decoration:underline}
+.alink.right{text-align:right;margin-top:-8px}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bd)}
+.divider span{font-size:11px;color:var(--tx3);font-weight:500}
+
+/* ══════════════════════════════════════════════════════
+   APP LAYOUT
+══════════════════════════════════════════════════════ */
+#app{display:none}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* sidebar */
+.sidebar{width:248px;min-width:248px;background:var(--side);display:flex;flex-direction:column;transition:width .25s,min-width .25s;overflow:hidden;z-index:100;flex-shrink:0}
+.sidebar.col{width:58px;min-width:58px}
+.sb-head{display:flex;align-items:center;justify-content:space-between;padding:16px 12px;border-bottom:1px solid rgba(255,255,255,.1);min-height:64px}
+.sb-brand{display:flex;align-items:center;gap:10px;min-width:0;overflow:hidden}
+.sb-ico{font-size:28px;flex-shrink:0;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+.sb-name{font-size:14px;font-weight:700;color:#fff;white-space:nowrap}
+.sb-role{font-size:10px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.sb-tog{width:26px;height:26px;background:rgba(255,255,255,.1);border:none;border-radius:6px;color:var(--stext);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.sb-tog:hover{background:rgba(255,255,255,.2);color:#fff}
+.sb-body{flex:1;overflow-y:auto;padding:10px 8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
+.ni-wrap{}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;font-size:13px;font-weight:500;color:var(--stext);border-radius:8px;margin:1px 0;transition:all .15s;white-space:nowrap;user-select:none}
+.nav-item:hover{background:var(--side2);color:#fff}
+.nav-item.on{background:var(--side3);color:#fff}
+.nav-item .ni{font-size:18px;flex-shrink:0;width:22px;text-align:center;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
+.nav-item .nl{flex:1}
+.nav-item .nc{font-size:10px;transition:transform .2s;color:rgba(255,255,255,.4);margin-left:auto}
+.nav-item .nc.open{transform:rotate(180deg)}
+.nav-child{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 30px;font-size:12px;color:rgba(184,208,240,.8);cursor:pointer;border-radius:6px;margin:1px 0;transition:all .15s;white-space:nowrap;user-select:none}
+.nav-child:hover{background:var(--side2);color:#fff}
+.nav-child.on{color:#93c5fd;background:rgba(37,99,235,.25)}
+.nav-child .nci{font-size:14px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.2))}
+.sb-foot{border-top:1px solid rgba(255,255,255,.1);padding:12px 10px;display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.uprofile{display:flex;align-items:center;gap:10px;overflow:hidden}
+.uavatar{width:36px;height:36px;border-radius:8px;background:var(--side3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
+.uname{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.urole{font-size:10px;color:#60a5fa;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.logout-btn{width:100%;padding:7px 12px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;color:#fca5a5;cursor:pointer;font-size:13px;font-weight:600;text-align:left;transition:all .2s;font-family:inherit;display:flex;align-items:center;gap:8px}
+.logout-btn:hover{background:rgba(239,68,68,.25)}
+
+/* topbar */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;background:#fff;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 22px;flex-shrink:0;box-shadow:var(--sh)}
+.bread{font-size:15px;font-weight:600;color:var(--tx)}
+.tb-right{display:flex;align-items:center;gap:10px}
+
+/* notification */
+.notif-wrap{position:relative}
+.notif-btn{width:36px;height:36px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;position:relative;transition:all .2s;filter:drop-shadow(0 1px 3px rgba(0,0,0,.1))}
+.notif-btn:hover{background:var(--bd)}
+.ndot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--err);border-radius:50%;border:2px solid #fff;display:none}
+.ndot.on{display:block}
+.ndrop{position:absolute;top:calc(100% + 8px);right:0;width:300px;background:#fff;border:1px solid var(--bd);border-radius:12px;box-shadow:var(--sh2);z-index:999;display:none;overflow:hidden}
+.ndrop.open{display:block}
+.ndrop-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);background:var(--bg)}
+.ndrop-title{font-size:13px;font-weight:700;color:var(--tx)}
+.ndrop-clear{font-size:11px;color:var(--acc);cursor:pointer;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--accl)}
+.ndrop-clear:hover{background:#bfdbfe}
+.nitem{display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .15s}
+.nitem:last-child{border-bottom:none}
+.nitem:hover{background:var(--bg)}
+.nitem.unread{background:#f0f7ff}
+.nitem-ico{font-size:20px;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
+.nitem-info{flex:1;min-width:0}
+.nitem-text{font-size:12px;color:var(--tx);line-height:1.4}
+.nitem-time{font-size:10px;color:var(--tx3);margin-top:3px}
+.ndrop-empty{padding:24px;text-align:center;color:var(--tx3);font-size:13px}
+.ndrop-count{display:inline-block;background:var(--err);color:#fff;border-radius:100px;font-size:9px;font-weight:700;padding:1px 5px;margin-left:4px;vertical-align:middle}
+
+/* user chip */
+.tb-user{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--accl);border:1px solid #bfdbfe;border-radius:8px;font-size:13px;font-weight:600;color:var(--acc)}
+.tb-user .tui{font-size:18px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.15))}
+
+/* page wrapper */
+.page-wrap{flex:1;overflow-y:auto;padding:22px;background:var(--bg)}
+.page{display:flex;flex-direction:column;gap:18px}
+.ph{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.pt{font-size:21px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:8px}
+.ps{font-size:13px;color:var(--tx2);margin-top:2px}
+
+/* stats grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:14px}
+.scard{background:#fff;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;border:1px solid var(--bd);box-shadow:var(--sh)}
+.sico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;filter:drop-shadow(0 4px 10px rgba(0,0,0,.15))}
+.sv{font-size:26px;font-weight:700;color:var(--tx)}
+.sl{font-size:11px;color:var(--tx2);margin-top:2px}
+.sch{font-size:11px;color:var(--ok);margin-top:3px;font-weight:500}
+
+/* card */
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:var(--sh)}
+.ch{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:14px 18px;border-bottom:1px solid var(--bd);background:#fff}
+.ct{font-size:13px;font-weight:600;color:var(--tx);display:flex;align-items:center;gap:6px}
+.cb{padding:16px 18px}
+.cb.p0{padding:0}
+
+/* 2-col grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.g2{grid-template-columns:1fr}}
+
+/* table */
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx2);background:var(--bg);border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid var(--bd);font-size:12.5px;color:var(--tx);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfd}
+.tm{font-weight:500}
+.ts{color:var(--tx2)}
+.empty-row{text-align:center;padding:32px!important;color:var(--tx3)!important}
+
+/* badges */
+.badge{display:inline-block;padding:3px 8px;background:var(--bg);border-radius:5px;font-size:11px;font-weight:500;color:var(--tx2);border:1px solid var(--bd);white-space:nowrap}
+.badge.a{background:var(--accl);color:var(--acc);border-color:#bfdbfe}
+.badge.g{background:var(--okl);color:var(--ok);border-color:#bbf7d0}
+.sbadge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700}
+.sbadge.pending{background:var(--warnl);color:var(--warn)}
+.sbadge.approved{background:var(--okl);color:var(--ok)}
+.sbadge.rejected{background:var(--errl);color:var(--err)}
+.abts{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+
+/* filter row */
+.frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* mini stats */
+.mstats{display:flex;gap:10px;flex-wrap:wrap}
+.ms{flex:1;min-width:90px;background:#fff;border:1px solid var(--bd);border-radius:10px;padding:14px;text-align:center;box-shadow:var(--sh)}
+.ms.pending{border-top:3px solid var(--warn)}
+.ms.approved{border-top:3px solid var(--ok)}
+.ms.rejected{border-top:3px solid var(--err)}
+.msv{font-size:26px;font-weight:700;color:var(--tx)}
+.msl{font-size:11px;color:var(--tx2);text-transform:capitalize;margin-top:3px}
+
+/* prediction */
+.pred{margin-top:10px;padding:12px;border-radius:8px;font-size:13px;font-weight:500}
+.pred.risk{background:var(--errl);border:1px solid #fecaca;color:var(--err)}
+.pred.excellent{background:var(--okl);border:1px solid #bbf7d0;color:var(--ok)}
+.pred.average{background:var(--warnl);border:1px solid #fed7aa;color:var(--warn)}
+
+/* scholarship info card */
+.sch-info{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--sh)}
+.ii2{display:flex;align-items:flex-start;gap:10px}
+.ii2ico{font-size:22px;flex-shrink:0;margin-top:2px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.iil{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em}
+.iiv{font-size:13px;color:var(--tx2);margin-top:3px;line-height:1.5}
+.iiv.hi{color:var(--ok);font-weight:700;font-size:16px}
+
+/* user card */
+.ucard{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--bd);transition:background .15s}
+.ucard:hover{background:var(--bg)}
+.ucard:last-child{border-bottom:none}
+.uca{width:42px;height:42px;border-radius:10px;background:var(--accl);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(0,0,0,.15))}
+.ucn{font-size:13px;font-weight:600;color:var(--tx)}
+.ucr{font-size:12px;color:var(--tx2);margin-top:2px}
+
+/* toggle */
+.toggle{position:relative;width:40px;height:20px;cursor:pointer;flex-shrink:0;display:inline-block}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.tsl{position:absolute;inset:0;background:var(--bd2);border-radius:100px;transition:background .2s}
+.tsl::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle input:checked+.tsl{background:var(--acc)}
+.toggle input:checked+.tsl::after{transform:translateX(20px)}
+
+/* pref row */
+.pi{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd)}
+.pi:last-child{border-bottom:none}
+.pil{font-size:13px;font-weight:500;color:var(--tx)}
+.pid{font-size:12px;color:var(--tx2);margin-top:2px}
+
+/* timetable */
+.ttcell{background:var(--accl);font-weight:600;font-size:11px;text-align:center;color:var(--acc);border-radius:4px;padding:6px 4px}
+.ttcell.lunch{background:var(--okl);color:var(--ok)}
+
+/* modal */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:2000;backdrop-filter:blur(3px)}
+.mbox{background:#fff;border-radius:14px;padding:26px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.22);animation:mslide .2s ease}
+@keyframes mslide{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.mtitle{font-size:17px;font-weight:700;color:var(--tx)}
+.mclose{width:28px;height:28px;background:var(--bg);border:1px solid var(--bd);border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--tx2);transition:background .15s}
+.mclose:hover{background:var(--bd)}
+.mfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--bd)}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* alert */
+.alt{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:10px}
+.alt-ok{background:var(--okl);border:1px solid #bbf7d0;color:var(--ok)}
+.alt-info{background:var(--accl);border:1px solid #bfdbfe;color:var(--acc)}
+
+/* role access tag */
+.role-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700}
+.rt-admin{background:#fdf2ff;color:#9333ea;border:1px solid #e9d5ff}
+.rt-hod{background:var(--okl);color:var(--ok);border:1px solid #bbf7d0}
+.rt-staff{background:var(--accl);color:var(--acc);border:1px solid #bfdbfe}
+.access-denied{display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:12px;color:var(--tx3)}
+.access-denied .ad-ico{font-size:56px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.15))}
+.access-denied .ad-title{font-size:18px;font-weight:600;color:var(--tx2)}
+.access-denied .ad-sub{font-size:13px}
+
+/* chart bars */
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:90px;padding:4px 0}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .4s}
+.bar-lbl{font-size:9px;color:var(--tx3);text-align:center}
+.bar-val{font-size:9px;color:var(--tx2);font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     AUTH SCREEN
+═══════════════════════════════════════ -->
+<div id="authPage" class="auth-page">
+  <div class="auth-left">
+    <div class="al-icon">🏛️</div>
+    <div class="al-name">EduAdmin Portal</div>
+    <div class="al-sub">College Administration System</div>
+    <div class="al-feats">
+      <div class="al-feat"><span>🛡️</span><span>Role-Based Secure Access (Admin / HOD / Staff)</span></div>
+      <div class="al-feat"><span>📋</span><span>Leave &amp; Certificate Approvals</span></div>
+      <div class="al-feat"><span>📁</span><span>Document Management &amp; Download</span></div>
+      <div class="al-feat"><span>🎓</span><span>6 Scholarship Modules</span></div>
+      <div class="al-feat"><span>📊</span><span>Performance Prediction &amp; Analytics</span></div>
+      <div class="al-feat"><span>🔔</span><span>Live Notifications</span></div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box" id="authBox"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════ -->
+<div id="app" class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-brand" id="sbBrand">
+        <span class="sb-ico">🏛️</span>
+        <div>
+          <div class="sb-name">EduAdmin</div>
+          <div class="sb-role" id="sbRoleLabel"></div>
+        </div>
+      </div>
+      <button class="sb-tog" id="sbTogBtn" onclick="toggleSidebar()">◀</button>
+    </div>
+    <div class="sb-body" id="sbNav"></div>
+    <div class="sb-foot">
+      <div class="uprofile">
+        <div class="uavatar" id="uAvatar"></div>
+        <div id="uInfo" style="min-width:0">
+          <div class="uname" id="uNameEl"></div>
+          <div class="urole" id="uRoleEl"></div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()"><span>🚪</span><span id="logoutLabel">Logout</span></button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    <div class="topbar">
+      <div class="bread" id="breadcrumb">Dashboard</div>
+      <div class="tb-right">
+        <!-- notification bell -->
+        <div class="notif-wrap">
+          <button class="notif-btn" onclick="toggleNotif(event)" id="notifBtn" title="Notifications">
+            🔔<span class="ndot" id="ndot"></span>
+          </button>
+          <div class="ndrop" id="ndrop">
+            <div class="ndrop-head">
+              <span class="ndrop-title">🔔 Notifications <span class="ndrop-count" id="unreadCount"></span></span>
+              <span class="ndrop-clear" onclick="clearNotifs()">Clear All</span>
+            </div>
+            <div id="nlist"></div>
+          </div>
+        </div>
+        <!-- user chip -->
+        <div class="tb-user">
+          <span class="tui" id="tbIcon"></span>
+          <span id="tbName"></span>
+        </div>
+      </div>
+    </div>
+    <div class="page-wrap" id="pageWrap"></div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL
+═══════════════════════════════════════ -->
+<div class="mo" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="mbox" id="mbox">
+    <div class="mhead">
+      <span class="mtitle" id="mtitle"></span>
+      <button class="mclose" onclick="closeModal()">✕</button>
+    </div>
+    <div id="mbody"></div>
+    <div class="mfoot" id="mfoot"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+const S = {
+  auth: null,
+  authScreen: 'login',
+  authRole: 'admin',
+  authError: '',
+  authSuccess: '',
+  page: 'dashboard',
+  sbCol: false,
+  notifOpen: false,
+  openGroups: { docs:true, leave:true, schol:false, tt:false, exam:false, sets:false },
+  docSearch:'', docType:'All', docDept:'All',
+  ttDept:'CSE', ttSem:'3rd', ttTable:null,
+  accounts: [
+    { name:'Admin User',   email:'admin@college.edu', password:'admin123', role:'admin' },
+    { name:'Staff Member', email:'staff@college.edu', password:'staff123', role:'staff' },
+    { name:'HOD Kumar',    email:'hod@college.edu',   password:'hod123',   role:'hod'   },
+  ],
+  notifications: [
+    { id:1, icon:'📋', text:'New leave request from Priya S.', time:'2 min ago', read:false },
+    { id:2, icon:'🎓', text:'BC/MBC scholarship application submitted', time:'15 min ago', read:false },
+    { id:3, icon:'📁', text:'Document uploaded by Vikram Nair', time:'1 hr ago', read:false },
+    { id:4, icon:'📊', text:'Exam schedule updated for CSE dept', time:'3 hrs ago', read:true },
+    { id:5, icon:'✅', text:'Leave approved for Dr. Kumar', time:'Yesterday', read:true },
+  ],
+  docs: [
+    { id:1, name:'Rahul Kumar',  type:'Bonafide Certificate', dept:'CSE',   date:'2024-01-15', size:'245 KB' },
+    { id:2, name:'Anita Sharma', type:'ID Proof',             dept:'ECE',   date:'2024-01-18', size:'180 KB' },
+    { id:3, name:'John Doe',     type:'Marks Sheet',          dept:'MECH',  date:'2024-02-01', size:'320 KB' },
+    { id:4, name:'Priya Singh',  type:'Transfer Certificate', dept:'CIVIL', date:'2024-02-10', size:'290 KB' },
+    { id:5, name:'Vikram Nair',  type:'Bonafide Certificate', dept:'IT',    date:'2024-02-14', size:'260 KB' },
+  ],
+  leaves: [
+    { id:1, name:'Priya S.',     type:'Medical Leave',     dept:'CSE',  from:'2024-03-10', to:'2024-03-12', role:'Student', status:'pending'  },
+    { id:2, name:'Vikram R.',    type:'OD Request',        dept:'ECE',  from:'2024-03-15', to:'2024-03-15', role:'Student', status:'pending'  },
+    { id:3, name:'Anjali M.',    type:'Bonafide Request',  dept:'IT',   from:'2024-03-16', to:'2024-03-16', role:'Student', status:'approved' },
+    { id:4, name:'Dr. Kumar',    type:'Casual Leave',      dept:'CSE',  from:'2024-03-18', to:'2024-03-19', role:'Staff',   status:'approved' },
+    { id:5, name:'Ravi Shankar', type:'Medical Leave',     dept:'MECH', from:'2024-03-20', to:'2024-03-22', role:'Staff',   status:'rejected' },
+  ],
+  users: [
+    { id:1, name:'Dr. A. Krishnamurthy', role:'HOD',   dept:'CSE',            email:'hod.cse@college.edu',  phone:'9876543210', status:'active'   },
+    { id:2, name:'Prof. S. Venkatesh',   role:'Staff', dept:'ECE',            email:'venkatesh@college.edu', phone:'9876543211', status:'active'   },
+    { id:3, name:'Admin User',           role:'Admin', dept:'Administration', email:'admin@college.edu',     phone:'9876543212', status:'active'   },
+    { id:4, name:'Prof. M. Rajan',       role:'Staff', dept:'MECH',           email:'rajan@college.edu',     phone:'9876543213', status:'inactive' },
+  ],
+  exams: [
+    { id:1, subject:'Data Structures', dept:'CSE',  sem:'3rd', date:'2024-04-15', time:'9:00 AM',  hall:'A101', students:65 },
+    { id:2, subject:'Signals & Systems',dept:'ECE', sem:'4th', date:'2024-04-16', time:'9:00 AM',  hall:'B202', students:58 },
+    { id:3, subject:'Thermodynamics',  dept:'MECH', sem:'3rd', date:'2024-04-17', time:'2:00 PM',  hall:'C303', students:72 },
+  ],
+  scholarships: {
+    'sch-first': { title:'First Graduate Scholarship',    amount:'₹12,000/year',              desc:'For first-generation graduates from Tamil Nadu',            eligibility:'Family income < ₹2.5L · First graduate in family · 60%+ marks',         apps:[{id:1,name:'Ramesh P.',roll:'21CS001',dept:'CSE',income:'₹1.8L',marks:'78%',status:'approved'},{id:2,name:'Lakshmi K.',roll:'21EC045',dept:'ECE',income:'₹2.1L',marks:'72%',status:'pending'},{id:3,name:'Murugan S.',roll:'21ME012',dept:'MECH',income:'₹2.3L',marks:'65%',status:'pending'}] },
+    'sch-bcmbc': { title:'BC / MBC Scholarship',          amount:'₹10,000/year',              desc:'For Backward Class & Most Backward Class students',          eligibility:'BC/MBC community · Income < ₹5L · Valid community certificate',          apps:[{id:1,name:'Senthil N.',roll:'21CS055',dept:'CSE',income:'₹3.2L',marks:'70%',status:'approved'},{id:2,name:'Geetha M.',roll:'21IT023',dept:'IT',income:'₹4.5L',marks:'68%',status:'pending'}] },
+    'sch-post':  { title:'Post Matric Scholarship',       amount:'₹15,000/year + fee rebate', desc:'Govt. of India scholarship for SC/ST students',             eligibility:'SC/ST community · Income < ₹2.5L · Full-time enrollment',               apps:[{id:1,name:'Selvi A.',roll:'21CS067',dept:'CSE',income:'₹1.2L',marks:'76%',status:'approved'},{id:2,name:'Kumar D.',roll:'21ME089',dept:'MECH',income:'₹2.0L',marks:'69%',status:'pending'}] },
+    'sch-res':   { title:'7.5% Reservation Scholarship', amount:'Full fee waiver',            desc:'For government school students under 7.5% reservation quota',eligibility:'Govt. school graduate · 50%+ in +2 · Sports/NCC preferred',              apps:[{id:1,name:'Mani K.',roll:'21CS044',dept:'CSE',income:'₹1.5L',marks:'58%',status:'approved'},{id:2,name:'Radha L.',roll:'22ME033',dept:'MECH',income:'₹2.0L',marks:'54%',status:'pending'}] },
+    'sch-merit': { title:'Merit Scholarship',             amount:'₹5,000/semester',           desc:'For academically excellent students',                        eligibility:'First class throughout · 85%+ marks · Good conduct certificate',         apps:[{id:1,name:'Deepa R.',roll:'21CS099',dept:'CSE',income:'₹6L',marks:'91%',status:'approved'},{id:2,name:'Arjun M.',roll:'21ECE077',dept:'ECE',income:'₹4.5L',marks:'88%',status:'approved'}] },
+    'sch-fee':   { title:'Fee Concession Scholarship',   amount:'25–75% fee concession',     desc:'Fee concession for economically weaker students',            eligibility:'Income < ₹3L · No other scholarship · 60%+ attendance',                  apps:[{id:1,name:'Vinoth K.',roll:'21ME056',dept:'MECH',income:'₹2.8L',marks:'67%',status:'approved'},{id:2,name:'Preethi J.',roll:'22IT067',dept:'IT',income:'₹1.9L',marks:'71%',status:'pending'}] },
+  },
+  settings: { college:'Sri Venkateswara College of Engineering', email:'admin@svce.ac.in', phone:'+91 44 2715 5000', notifs:true, emails:true, auto:false },
+};
+
+const DEPTS     = ['CSE','ECE','MECH','IT','CIVIL'];
+const DOC_TYPES = ['Bonafide Certificate','ID Proof','Marks Sheet','Transfer Certificate','Fee Receipt'];
+const SEMS      = ['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+const LEAVE_TYPES = { leave:['Medical Leave','Casual Leave','Emergency Leave'], od:['OD Request','Bonafide Request'], certs:['Bonafide Certificate','Transfer Certificate','Course Completion'] };
+
+/* Role-based page access */
+const ROLE_PAGES = {
+  admin: ['dashboard','users','documents','leave','od','certs','sch-first','sch-bcmbc','sch-post','sch-res','sch-merit','sch-fee','timetable','examination','settings'],
+  hod:   ['dashboard','documents','leave','od','certs','sch-first','sch-bcmbc','sch-post','sch-res','sch-merit','sch-fee','timetable'],
+  staff: ['dashboard','documents','leave','od','certs'],
+};
+const canAccess = (page) => S.auth && (ROLE_PAGES[S.auth.role]||[]).includes(page);
+
+/* ═══════════════════════════════════════════════════════
+   RENDER ENGINE
+═══════════════════════════════════════════════════════ */
+function render() {
+  if (!S.auth) { showAuth(); return; }
+  document.getElementById('authPage').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  renderSidebar();
+  renderNotifs();
+  renderPage();
+}
+
+/* ═══════════════════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════════════════ */
+function showAuth() {
+  document.getElementById('authPage').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  const box = document.getElementById('authBox');
+  const r = S.authRole;
+  const hints = { admin:'admin@college.edu / admin123', staff:'staff@college.edu / staff123', hod:'hod@college.edu / hod123' };
+  const tabs = ['admin','staff','hod'].map(rl => `
+    <button class="rtab ${S.authRole===rl?'on':''}" onclick="setAuthRole('${rl}')">
+      <span class="ico">${rl==='admin'?'🛡️':rl==='staff'?'👨‍💼':'🎓'}</span>
+      <span>${rl.toUpperCase()}</span>
+    </button>`).join('');
+
+  if (S.authScreen === 'login') {
+    box.innerHTML = `
+      <div class="auth-title">Welcome back 👋</div>
+      <div class="auth-sub">Sign in to your account to continue</div>
+      <div class="rtabs">${tabs}</div>
+      ${S.authSuccess ? `<div class="asuc">✅ ${S.authSuccess}</div>` : ''}
+      ${S.authError   ? `<div class="aerr">⚠️ ${S.authError}</div>` : ''}
+      <div class="ahint">💡 Hint: ${hints[r]}</div>
+      <form onsubmit="doLogin(event)">
+        <div class="fg"><label class="fl">Email Address</label>
+          <div class="iw"><span class="ii">✉️</span><input class="fi" type="email" id="l_email" placeholder="Enter your email" required autocomplete="username"/></div></div>
+        <div class="fg"><label class="fl">Password</label>
+          <div class="iw"><span class="ii">🔒</span><input class="fi" type="password" id="l_pwd" placeholder="Enter your password" required autocomplete="current-password"/></div></div>
+        <div class="alink right"><a onclick="gotoAuth('forgot')">Forgot password?</a></div>
+        <button class="btn bp bfull" type="submit" style="margin-top:4px">Sign In →</button>
+      </form>
+      <div class="divider"><span>OR</span></div>
+      <div class="alink">Don't have an account? <a onclick="gotoAuth('signup')">Sign Up</a></div>`;
+  } else if (S.authScreen === 'signup') {
+    box.innerHTML = `
+      <div class="auth-title">Create account 🎉</div>
+      <div class="auth-sub">Register as a college portal user</div>
+      <div class="rtabs">${tabs}</div>
+      ${S.authError ? `<div class="aerr">⚠️ ${S.authError}</div>` : ''}
+      <form onsubmit="doSignup(event)">
+        <div class="fg"><label class="fl">Full Name</label>
+          <div class="iw"><span class="ii">👤</span><input class="fi" id="s_name" placeholder="Enter your full name" required/></div></div>
+        <div class="fg"><label class="fl">Email Address</label>
+          <div class="iw"><span class="ii">✉️</span><input class="fi" type="email" id="s_email" placeholder="Enter email address" required autocomplete="username"/></div></div>
+        <div class="fg"><label class="fl">Password</label>
+          <div class="iw"><span class="ii">🔒</span><input class="fi" type="password" id="s_pwd" placeholder="Create a password (6+ chars)" required autocomplete="new-password"/></div></div>
+        <div class="fg"><label class="fl">Confirm Password</label>
+          <div class="iw"><span class="ii">🔒</span><input class="fi" type="password" id="s_pwd2" placeholder="Confirm your password" required autocomplete="new-password"/></div></div>
+        <button type="button" class="btn bout bsm" style="margin-bottom:14px" onclick="genPwd()">⚡ Generate Strong Password</button>
+        <button class="btn bp bfull" type="submit">Create Account</button>
+      </form>
+      <div class="alink" style="margin-top:10px">Already have an account? <a onclick="gotoAuth('login')">Sign In</a></div>`;
+  } else {
+    box.innerHTML = `
+      <div class="auth-title">Reset Password 🔑</div>
+      <div class="auth-sub">Enter your email to receive a reset link</div>
+      ${S.authSuccess ? `<div class="asuc">${S.authSuccess}</div>` : ''}
+      ${S.authError   ? `<div class="aerr">⚠️ ${S.authError}</div>` : ''}
+      <form onsubmit="doForgot(event)">
+        <div class="fg"><label class="fl">Email Address</label>
+          <div class="iw"><span class="ii">✉️</span><input class="fi" type="email" id="f_email" placeholder="Your registered email" required autocomplete="username"/></div></div>
+        <button class="btn bp bfull" type="submit">Send Reset Link</button>
+      </form>
+      <div class="alink" style="margin-top:12px"><a onclick="gotoAuth('login')">← Back to Sign In</a></div>`;
+  }
+}
+
+function setAuthRole(r) { S.authRole = r; S.authError = ''; showAuth(); }
+function gotoAuth(s)    { S.authScreen = s; S.authError = ''; S.authSuccess = ''; showAuth(); }
+
+function doLogin(e) {
+  e.preventDefault();
+  const email = v('l_email'), pwd = v('l_pwd');
+  const acc = S.accounts.find(a => a.email===email && a.password===pwd && a.role===S.authRole);
+  if (acc) { S.auth = { name:acc.name, email:acc.email, role:acc.role }; S.authError = ''; S.authSuccess = ''; S.page = 'dashboard'; render(); }
+  else     { S.authError = 'Invalid credentials. Use the hint above.'; showAuth(); }
+}
+
+function doSignup(e) {
+  e.preventDefault();
+  const name = v('s_name'), email = v('s_email'), pwd = v('s_pwd'), pwd2 = v('s_pwd2');
+  if (pwd !== pwd2)             { S.authError = 'Passwords do not match.'; showAuth(); return; }
+  if (pwd.length < 6)           { S.authError = 'Password must be at least 6 characters.'; showAuth(); return; }
+  if (S.accounts.find(a=>a.email===email)) { S.authError = 'Email already registered.'; showAuth(); return; }
+  S.accounts.push({ name, email, password:pwd, role:S.authRole });
+  S.authSuccess = 'Account created successfully! You can now sign in.';
+  S.authScreen  = 'login'; showAuth();
+}
+
+function doForgot(e) {
+  e.preventDefault();
+  const email = v('f_email');
+  const acc = S.accounts.find(a => a.email === email);
+  if (acc) { S.authSuccess = `✉️ Reset link sent! (Demo mode: your password is "${acc.password}")`; S.authError = ''; }
+  else     { S.authError = 'No account found with this email address.'; S.authSuccess = ''; }
+  showAuth();
+}
+
+function genPwd() {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$!';
+  let p = '';
+  for (let i = 0; i < 12; i++) p += chars[Math.floor(Math.random() * chars.length)];
+  const s = ge('s_pwd'), s2 = ge('s_pwd2');
+  if (s) { s.value = p; s.type = 'text'; setTimeout(() => { s.type = 'password'; }, 2500); }
+  if (s2) s2.value = p;
+}
+
+function logout() { S.auth = null; S.authScreen = 'login'; S.authSuccess = ''; S.authError = ''; render(); }
+
+/* ═══════════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════════ */
+const NAV = [
+  { key:'users', icon:'👥', label:'User Management',    page:'users' },
+  { key:'docs',  icon:'📁', label:'Document Management', children:[
+    { page:'documents', icon:'📄', label:'Upload & Search' }
+  ]},
+  { key:'leave', icon:'📋', label:'Leave & Certificates', children:[
+    { page:'leave', icon:'🗓️', label:'Leave Requests' },
+    { page:'od',    icon:'📝', label:'OD / Bonafide' },
+    { page:'certs', icon:'🏅', label:'Certificates' },
+  ]},
+  { key:'schol', icon:'🎓', label:'Scholarship Module', children:[
+    { page:'sch-first', icon:'⭐', label:'First Graduate' },
+    { page:'sch-bcmbc', icon:'📜', label:'BC / MBC' },
+    { page:'sch-post',  icon:'📜', label:'Post Matric' },
+    { page:'sch-res',   icon:'📜', label:'7.5% Reservation' },
+    { page:'sch-merit', icon:'🏆', label:'Merit' },
+    { page:'sch-fee',   icon:'💰', label:'Fee Concession' },
+  ]},
+  { key:'tt',   icon:'📅', label:'Timetable',     children:[ { page:'timetable',   icon:'⚙️', label:'Auto Generator' } ] },
+  { key:'exam', icon:'📊', label:'Examination',   children:[ { page:'examination', icon:'📝', label:'Manage Exams'   } ] },
+  { key:'sets', icon:'⚙️', label:'Settings',      children:[ { page:'settings',    icon:'🛠️', label:'Preferences'   } ] },
+];
+
+function renderSidebar() {
+  const col  = S.sbCol;
+  const role = S.auth?.role;
+  const icon = roleIcon(role);
+
+  ge('sidebar').className  = 'sidebar' + (col ? ' col' : '');
+  ge('sbBrand').style.display = col ? 'none' : 'flex';
+  ge('uInfo').style.display   = col ? 'none' : 'block';
+  ge('logoutLabel').style.display = col ? 'none' : 'inline';
+  ge('sbTogBtn').textContent  = col ? '▶' : '◀';
+  ge('sbRoleLabel').textContent = (role||'').toUpperCase() + ' PANEL';
+  ge('uAvatar').textContent   = icon;
+  ge('uNameEl').textContent   = S.auth?.name || '';
+  ge('uRoleEl').textContent   = (role||'').toUpperCase();
+  ge('tbIcon').textContent    = icon;
+  ge('tbName').textContent    = S.auth?.name || '';
+
+  let html = `<div class="nav-item ${S.page==='dashboard'?'on':''}" onclick="goto('dashboard')">
+    <span class="ni">📊</span>${!col ? '<span class="nl">Dashboard</span>' : ''}
+  </div>`;
+
+  for (const grp of NAV) {
+    const hasChildren = grp.children && grp.children.length > 0;
+    const accessible  = hasChildren
+      ? grp.children.some(c => canAccess(c.page))
+      : canAccess(grp.page || grp.key);
+    if (!accessible) continue;
+
+    if (!hasChildren) {
+      html += `<div class="nav-item ${S.page===grp.page?'on':''}" onclick="goto('${grp.page}')">
+        <span class="ni">${grp.icon}</span>${!col ? `<span class="nl">${grp.label}</span>` : ''}
+      </div>`;
+    } else {
+      const open = S.openGroups[grp.key];
+      html += `<div class="nav-item" onclick="toggleGroup('${grp.key}')">
+        <span class="ni">${grp.icon}</span>
+        ${!col ? `<span class="nl">${grp.label}</span><span class="nc ${open?'open':''}">▾</span>` : ''}
+      </div>`;
+      if (!col && open) {
+        for (const c of grp.children) {
+          if (!canAccess(c.page)) continue;
+          html += `<div class="nav-child ${S.page===c.page?'on':''}" onclick="goto('${c.page}')">
+            <span class="nci">${c.icon}</span><span>${c.label}</span>
+          </div>`;
+        }
+      }
+    }
+  }
+  ge('sbNav').innerHTML = html;
+}
+
+function toggleSidebar() { S.sbCol = !S.sbCol; renderSidebar(); }
+function toggleGroup(k)  { S.openGroups[k] = !S.openGroups[k]; renderSidebar(); }
+
+function goto(page) {
+  if (!canAccess(page) && page !== 'dashboard') { accessDenied(); return; }
+  S.page = page;
+  const names = { dashboard:'Dashboard', users:'User Management', documents:'Document Management', leave:'Leave Requests', od:'OD / Bonafide', certs:'Certificate Requests', 'sch-first':'First Graduate Scholarship', 'sch-bcmbc':'BC/MBC Scholarship', 'sch-post':'Post Matric Scholarship', 'sch-res':'7.5% Reservation', 'sch-merit':'Merit Scholarship', 'sch-fee':'Fee Concession', timetable:'Timetable Generator', examination:'Examination Management', settings:'Settings' };
+  ge('breadcrumb').textContent = names[page] || page;
+  renderSidebar();
+  renderPage();
+}
+
+/* ═══════════════════════════════════════════════════════
+   NOTIFICATIONS
+═══════════════════════════════════════════════════════ */
+function renderNotifs() {
+  const unread = S.notifications.filter(n => !n.read).length;
+  ge('ndot').className     = 'ndot' + (unread > 0 ? ' on' : '');
+  ge('unreadCount').textContent = unread > 0 ? unread : '';
+  ge('unreadCount').style.display = unread > 0 ? 'inline' : 'none';
+  const list = ge('nlist');
+  if (!S.notifications.length) {
+    list.innerHTML = `<div class="ndrop-empty">🎉 No new notifications</div>`;
+    return;
+  }
+  list.innerHTML = S.notifications.slice(0, 8).map(n => `
+    <div class="nitem ${n.read?'':'unread'}" onclick="readNotif(${n.id})">
+      <span class="nitem-ico">${n.icon}</span>
+      <div class="nitem-info">
+        <div class="nitem-text">${n.text}</div>
+        <div class="nitem-time">${n.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleNotif(e) {
+  e && e.stopPropagation();
+  S.notifOpen = !S.notifOpen;
+  ge('ndrop').className = 'ndrop' + (S.notifOpen ? ' open' : '');
+}
+
+function readNotif(id) {
+  const n = S.notifications.find(n => n.id === id);
+  if (n) n.read = true;
+  renderNotifs();
+}
+
+function clearNotifs() {
+  S.notifications = [];
+  S.notifOpen = false;
+  ge('ndrop').className = 'ndrop';
+  renderNotifs();
+}
+
+function addNotif(icon, text) {
+  S.notifications.unshift({ id: Date.now(), icon, text, time:'Just now', read:false });
+  if (S.notifications.length > 12) S.notifications = S.notifications.slice(0, 12);
+  renderNotifs();
+}
+
+document.addEventListener('click', (e) => {
+  if (S.notifOpen && !ge('notifBtn').contains(e.target) && !ge('ndrop').contains(e.target)) {
+    S.notifOpen = false;
+    ge('ndrop').className = 'ndrop';
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   PAGE ROUTER
+═══════════════════════════════════════════════════════ */
+function renderPage() {
+  const pw = ge('pageWrap');
+  switch (S.page) {
+    case 'dashboard':   pw.innerHTML = pageDashboard();   break;
+    case 'users':       pw.innerHTML = pageUsers();       break;
+    case 'documents':   pw.innerHTML = pageDocs();        break;
+    case 'leave':       pw.innerHTML = pageLeave('leave'); break;
+    case 'od':          pw.innerHTML = pageLeave('od');    break;
+    case 'certs':       pw.innerHTML = pageLeave('certs'); break;
+    case 'sch-first': case 'sch-bcmbc': case 'sch-post':
+    case 'sch-res': case 'sch-merit': case 'sch-fee':
+      pw.innerHTML = pageScholarship(S.page); break;
+    case 'timetable':   pw.innerHTML = pageTimetable();   break;
+    case 'examination': pw.innerHTML = pageExam();        break;
+    case 'settings':    pw.innerHTML = pageSettings();    break;
+    default:            pw.innerHTML = pageDashboard();
+  }
+}
+
+function accessDenied() {
+  ge('pageWrap').innerHTML = `<div class="access-denied">
+    <div class="ad-ico">🚫</div>
+    <div class="ad-title">Access Restricted</div>
+    <div class="ad-sub">You don't have permission to view this section.</div>
+    <div class="ad-sub" style="margin-top:4px">Contact your administrator for access.</div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════════════════ */
+function pageDashboard() {
+  const pending = S.leaves.filter(l => l.status==='pending').length;
+  const bars = [72,68,75,80,78,85].map((v,i) => `
+    <div class="bar-col">
+      <div class="bar-val">${v}%</div>
+      <div class="bar" style="height:${v}%;background:${i<3?'#93c5fd':'#2563eb'};width:100%"></div>
+      <div class="bar-lbl">${['Jan','Feb','Mar','Apr','May','Jun'][i]}</div>
+    </div>`).join('');
+
+  return `<div class="page">
+  <div class="ph">
+    <div>
+      <div class="pt">📊 Dashboard</div>
+      <div class="ps">Welcome back, <strong>${S.auth?.name}</strong>! Here's your college overview.</div>
+    </div>
+    <span class="role-tag ${S.auth?.role==='admin'?'rt-admin':S.auth?.role==='hod'?'rt-hod':'rt-staff'}">${roleIcon(S.auth?.role)} ${(S.auth?.role||'').toUpperCase()}</span>
+  </div>
+
+  <div class="stats-grid">
+    <div class="scard" style="border-top:3px solid #2563eb">
+      <div class="sico" style="background:#eff6ff">👨‍🎓</div>
+      <div><div class="sv">1,254</div><div class="sl">Total Students</div><div class="sch">↑ 12 this month</div></div>
+    </div>
+    <div class="scard" style="border-top:3px solid #d97706">
+      <div class="sico" style="background:#fffbeb">📋</div>
+      <div><div class="sv">${pending}</div><div class="sl">Pending Leaves</div><div class="sch">Needs attention</div></div>
+    </div>
+    <div class="scard" style="border-top:3px solid #16a34a">
+      <div class="sico" style="background:#f0fdf4">🎓</div>
+      <div><div class="sv">432</div><div class="sl">Scholarships Applied</div><div class="sch">↑ 28 this semester</div></div>
+    </div>
+    <div class="scard" style="border-top:3px solid #dc2626">
+      <div class="sico" style="background:#fef2f2">⚠️</div>
+      <div><div class="sv">24</div><div class="sl">Low Attendance</div><div class="sch">Requires action</div></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><span class="ct">🤖 Performance Prediction</span></div>
+      <div class="cb">
+        <div class="fg"><label class="fl">Past Marks (comma-separated)</label>
+          <input class="fi no" id="d_marks" value="72, 68, 55, 60, 75, 75" placeholder="e.g. 72, 68, 55, 60"/></div>
+        <div class="fg"><label class="fl">Attendance %</label>
+          <input class="fi no" id="d_att" value="82" placeholder="e.g. 82"/></div>
+        <button class="btn bp bsm" onclick="predict()">🔮 Predict Performance</button>
+        <div id="predResult"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><span class="ct">📈 Attendance Overview (Monthly)</span></div>
+      <div class="cb">
+        <div class="bar-chart">${bars}</div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <span style="font-size:11px;color:var(--tx2)">● <span style="color:#2563eb">Current</span></span>
+          <span style="font-size:11px;color:var(--tx2)">● <span style="color:#93c5fd">Previous</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><span class="ct">📁 Recent Documents</span></div>
+      <div class="cb p0">
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>Action</th></tr></thead>
+          <tbody>${S.docs.slice(0,4).map(d=>`<tr>
+            <td class="tm">${d.name}</td>
+            <td><span class="badge">${d.type}</span></td>
+            <td><button class="btn bp bxs" onclick="dlFile('${escJ(d.name)}.txt','Document: ${escJ(d.name)}\\nType: ${escJ(d.type)}\\nDept: ${d.dept}\\nDate: ${d.date}')">⬇️ Download</button></td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><span class="ct">📋 Leave Approvals</span></div>
+      <div class="cb p0">
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="dashLeaves">${dashLeaveRows()}</tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+function dashLeaveRows() {
+  const canApprove = S.auth?.role==='admin'||S.auth?.role==='hod';
+  return S.leaves.slice(0,4).map(l=>`<tr>
+    <td class="tm">${l.name}</td>
+    <td><span class="badge">${l.type}</span></td>
+    <td><span class="sbadge ${l.status}">${l.status}</span></td>
+    <td>${canApprove&&l.status==='pending'?`<div class="abts">
+      <button class="btn bok bxs" onclick="dashAction(${l.id},'approved')">✅</button>
+      <button class="btn berr bxs" onclick="dashAction(${l.id},'rejected')">✖</button>
+    </div>`:''}</td>
+  </tr>`).join('');
+}
+
+function dashAction(id, status) {
+  const l = S.leaves.find(l=>l.id===id);
+  if(l){ l.status=status; addNotif('📋', `Leave ${status} for ${l.name}`); }
+  const el = ge('dashLeaves'); if(el) el.innerHTML = dashLeaveRows();
+  // update stat card
+  const pending = S.leaves.filter(l=>l.status==='pending').length;
+  document.querySelectorAll('.sv').forEach((el,i)=>{ if(i===1) el.textContent=pending; });
+}
+
+function predict() {
+  const marks = v('d_marks').split(',').map(m=>parseFloat(m.trim())).filter(n=>!isNaN(n));
+  const att   = parseFloat(v('d_att'))||0;
+  if(!marks.length){ ge('predResult').innerHTML='<div class="pred average">Enter valid marks to predict.</div>'; return; }
+  const avg = marks.reduce((s,x)=>s+x,0)/marks.length;
+  let cls, txt;
+  if (avg<60||att<75)       { cls='risk';      txt='⚠️ At Risk — Student needs academic counseling.' }
+  else if(avg>=80&&att>=85) { cls='excellent'; txt='🌟 Excellent — Student is performing exceptionally!' }
+  else                      { cls='average';   txt='📈 Average — On track. Continue monitoring.' }
+  ge('predResult').innerHTML=`<div class="pred ${cls}" style="margin-top:10px">${txt}<br><small>Avg marks: ${avg.toFixed(1)}% | Attendance: ${att}%</small></div>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DOCUMENTS
+═══════════════════════════════════════════════════════ */
+function pageDocs() {
+  const isAdmin = S.auth?.role==='admin';
+  const types   = ['All',...DOC_TYPES];
+  const depts   = ['All',...DEPTS];
+  const filtered = S.docs.filter(d => {
+    const s = d.name.toLowerCase().includes(S.docSearch.toLowerCase()) || d.type.toLowerCase().includes(S.docSearch.toLowerCase());
+    const t = S.docType==='All'||d.type===S.docType;
+    const dp= S.docDept==='All'||d.dept===S.docDept;
+    return s&&t&&dp;
+  });
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">📁 Document Management</div>
+    ${isAdmin?`<button class="btn bp" onclick="openDocModal(null)">+ Add Document</button>`:`<span class="role-tag rt-staff">📥 View &amp; Download Only</span>`}
+  </div>
+  <div class="card">
+    <div class="ch">
+      <span class="ct">All Documents <span style="font-weight:400;color:var(--tx3)">(${filtered.length})</span></span>
+      <div class="frow">
+        <select class="fi sm no" onchange="S.docType=this.value;renderPage()">${types.map(t=>`<option${S.docType===t?' selected':''}>${t}</option>`).join('')}</select>
+        <select class="fi sm no" onchange="S.docDept=this.value;renderPage()">${depts.map(d=>`<option${S.docDept===d?' selected':''}>${d}</option>`).join('')}</select>
+        <input class="fi sm no" placeholder="🔍 Search name or type..." value="${escH(S.docSearch)}" oninput="S.docSearch=this.value;renderPage()" style="min-width:180px"/>
+      </div>
+    </div>
+    <div class="cb p0">
+      <table>
+        <thead><tr><th>#</th><th>Name</th><th>Type</th><th>Dept</th><th>Date</th><th>Size</th><th>Actions</th></tr></thead>
+        <tbody>${filtered.length ? filtered.map((d,i)=>`<tr>
+          <td class="ts">${i+1}</td>
+          <td class="tm">${escH(d.name)}</td>
+          <td><span class="badge">${d.type}</span></td>
+          <td><span class="badge a">${d.dept}</span></td>
+          <td class="ts">${d.date}</td>
+          <td class="ts">${d.size}</td>
+          <td><div class="abts">
+            ${isAdmin?`<button class="btn bg2 bxs" onclick="openDocModal(${d.id})">✏️ Edit</button>`:''}
+            <button class="btn bp bxs" onclick="dlFile('${escJ(d.name)}.txt','Name: ${escJ(d.name)}\\nType: ${escJ(d.type)}\\nDept: ${d.dept}\\nDate: ${d.date}')">⬇️ Download</button>
+            ${isAdmin?`<button class="btn berr bxs" onclick="delDoc(${d.id})">🗑️</button>`:''}
+          </div></td>
+        </tr>`).join('') : `<tr><td colspan="7" class="empty-row">No documents found</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  </div></div>`;
+}
+
+function openDocModal(id) {
+  const doc = id ? S.docs.find(d=>d.id===id) : null;
+  openModal(doc?'✏️ Edit Document':'📄 Add Document', `
+    <div class="fg"><label class="fl">Student / Staff Name</label>
+      <input class="fi no" id="m_dn" value="${escH(doc?.name||'')}" placeholder="Full name"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Document Type</label>
+        <select class="fi no" id="m_dt">${DOC_TYPES.map(t=>`<option${doc?.type===t?' selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="m_dd">${DEPTS.map(d=>`<option${doc?.dept===d?' selected':''}>${d}</option>`).join('')}</select></div>
+    </div>`,
+    () => {
+      const name = v('m_dn');
+      if (!name) return;
+      if (doc) { doc.name=name; doc.type=v('m_dt'); doc.dept=v('m_dd'); addNotif('📁',`Document updated: ${name}`); }
+      else     { S.docs.unshift({id:Date.now(),name,type:v('m_dt'),dept:v('m_dd'),date:today(),size:'200 KB'}); addNotif('📁',`New document added: ${name}`); }
+      closeModal(); renderPage();
+    });
+}
+
+function delDoc(id) {
+  if (!confirm('Delete this document?')) return;
+  S.docs = S.docs.filter(d=>d.id!==id);
+  renderPage();
+}
+
+/* ═══════════════════════════════════════════════════════
+   LEAVE / OD / CERTIFICATES
+═══════════════════════════════════════════════════════ */
+function pageLeave(type) {
+  const canApprove = S.auth?.role==='admin'||S.auth?.role==='hod';
+  const ltypes  = LEAVE_TYPES[type];
+  const titles  = { leave:'📋 Leave Requests', od:'📝 OD / Bonafide Requests', certs:'🏅 Certificate Requests' };
+  const filtered = S.leaves.filter(l => ltypes.includes(l.type));
+  const show     = filtered.length ? filtered : S.leaves;
+
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">${titles[type]}</div>
+    <button class="btn bp" onclick="openLeaveModal(null,'${type}')">+ Add Request</button>
+  </div>
+  <div class="mstats">
+    ${['pending','approved','rejected'].map(s=>`<div class="ms ${s}">
+      <div class="msv">${S.leaves.filter(l=>l.status===s).length}</div>
+      <div class="msl">${s}</div>
+    </div>`).join('')}
+  </div>
+  <div class="card"><div class="cb p0">
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th>Dept</th><th>Role</th><th>From</th><th>To</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>${show.map(r=>`<tr>
+        <td class="tm">${escH(r.name)}</td>
+        <td><span class="badge">${r.type}</span></td>
+        <td><span class="badge a">${r.dept}</span></td>
+        <td class="ts">${r.role}</td>
+        <td class="ts">${r.from}</td>
+        <td class="ts">${r.to}</td>
+        <td><span class="sbadge ${r.status}">${r.status}</span></td>
+        <td><div class="abts">
+          <button class="btn bg2 bxs" onclick="openLeaveModal(${r.id},'${type}')">✏️ Edit</button>
+          ${canApprove&&r.status==='pending'
+            ? `<button class="btn bok bxs" onclick="leaveAction(${r.id},'approved')">✅ Approve</button>
+               <button class="btn berr bxs" onclick="leaveAction(${r.id},'rejected')">✖ Reject</button>`
+            : canApprove&&r.status!=='pending'
+            ? `<button class="btn bg2 bxs" onclick="leaveAction(${r.id},'pending')">↩ Reset</button>`
+            : ''}
+        </div></td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div></div></div>`;
+}
+
+function leaveAction(id, status) {
+  const r = S.leaves.find(l=>l.id===id);
+  if (r) { r.status=status; if(status!=='pending') addNotif('📋',`Leave ${status} for ${r.name}`); }
+  renderPage();
+}
+
+function openLeaveModal(id, type) {
+  const r = id ? S.leaves.find(l=>l.id===id) : null;
+  const ltypes = LEAVE_TYPES[type];
+  openModal(r?'✏️ Edit Request':'📋 Add Request', `
+    <div class="fg"><label class="fl">Full Name</label>
+      <input class="fi no" id="m_ln" value="${escH(r?.name||'')}" placeholder="Student / Staff name"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Request Type</label>
+        <select class="fi no" id="m_lt">${ltypes.map(t=>`<option${r?.type===t?' selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="m_ld">${DEPTS.map(d=>`<option${r?.dept===d?' selected':''}>${d}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Role</label>
+        <select class="fi no" id="m_lr"><option${r?.role==='Student'?' selected':''}>Student</option><option${r?.role==='Staff'?' selected':''}>Staff</option></select></div>
+    </div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">From Date</label>
+        <input type="date" class="fi no" id="m_lf" value="${r?.from||''}"/></div>
+      <div class="fg"><label class="fl">To Date</label>
+        <input type="date" class="fi no" id="m_lto" value="${r?.to||''}"/></div>
+    </div>`,
+    () => {
+      const name = v('m_ln');
+      if (!name) return;
+      const obj = { name, type:v('m_lt'), dept:v('m_ld'), role:v('m_lr'), from:v('m_lf'), to:v('m_lto'), status:r?.status||'pending' };
+      if (r) { Object.assign(r,obj); }
+      else   { S.leaves.unshift({id:Date.now(),...obj}); addNotif('📋',`New request from ${name}`); }
+      closeModal(); renderPage();
+    });
+}
+
+/* ═══════════════════════════════════════════════════════
+   SCHOLARSHIP
+═══════════════════════════════════════════════════════ */
+function pageScholarship(key) {
+  const d = S.scholarships[key];
+  if (!d) return `<div class="page"><div class="pt">Not found</div></div>`;
+  const canApprove = S.auth?.role==='admin'||S.auth?.role==='hod';
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">🎓 ${d.title}</div>
+    <button class="btn bp" onclick="openSchModal('${key}',null)">+ New Application</button>
+  </div>
+  <div class="sch-info">
+    <div class="ii2"><span class="ii2ico">📝</span><div><div class="iil">Description</div><div class="iiv">${d.desc}</div></div></div>
+    <div class="ii2"><span class="ii2ico">✅</span><div><div class="iil">Eligibility</div><div class="iiv">${d.eligibility}</div></div></div>
+    <div class="ii2"><span class="ii2ico">💰</span><div><div class="iil">Amount</div><div class="iiv hi">${d.amount}</div></div></div>
+  </div>
+  <div class="mstats">
+    ${['pending','approved','rejected'].map(s=>`<div class="ms ${s}"><div class="msv">${d.apps.filter(a=>a.status===s).length}</div><div class="msl">${s}</div></div>`).join('')}
+  </div>
+  <div class="card"><div class="cb p0">
+    <table>
+      <thead><tr><th>Name</th><th>Roll No.</th><th>Dept</th><th>Income</th><th>Marks</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>${d.apps.length ? d.apps.map(a=>`<tr>
+        <td class="tm">${escH(a.name)}</td><td class="ts">${a.roll}</td>
+        <td><span class="badge a">${a.dept}</span></td>
+        <td class="ts">${a.income}</td><td class="ts">${a.marks}</td>
+        <td><span class="sbadge ${a.status}">${a.status}</span></td>
+        <td><div class="abts">
+          <button class="btn bg2 bxs" onclick="openSchModal('${key}',${a.id})">✏️ Edit</button>
+          ${canApprove&&a.status==='pending'
+            ? `<button class="btn bok bxs" onclick="schAction('${key}',${a.id},'approved')">✅ Approve</button>
+               <button class="btn berr bxs" onclick="schAction('${key}',${a.id},'rejected')">✖ Reject</button>`
+            : canApprove&&a.status!=='pending'
+            ? `<button class="btn bg2 bxs" onclick="schAction('${key}',${a.id},'pending')">↩ Reset</button>`
+            : ''}
+        </div></td>
+      </tr>`).join('') : `<tr><td colspan="7" class="empty-row">No applications yet. Click "+ New Application" to add one.</td></tr>`}
+      </tbody>
+    </table>
+  </div></div></div>`;
+}
+
+function schAction(key, id, status) {
+  const a = S.scholarships[key]?.apps.find(a=>a.id===id);
+  if (a) { a.status=status; if(status!=='pending') addNotif('🎓',`Scholarship ${status} for ${a.name}`); }
+  renderPage();
+}
+
+function openSchModal(key, id) {
+  const d = S.scholarships[key];
+  const a = id ? d.apps.find(a=>a.id===id) : null;
+  openModal(a?'✏️ Edit Application':'🎓 New Application', `
+    <div class="frow2">
+      <div class="fg"><label class="fl">Student Name</label>
+        <input class="fi no" id="m_sn" value="${escH(a?.name||'')}" placeholder="Full name"/></div>
+      <div class="fg"><label class="fl">Roll Number</label>
+        <input class="fi no" id="m_sr" value="${escH(a?.roll||'')}" placeholder="e.g. 22CS001"/></div>
+    </div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="m_sd">${DEPTS.map(dp=>`<option${a?.dept===dp?' selected':''}>${dp}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Family Income</label>
+        <input class="fi no" id="m_si" value="${escH(a?.income||'')}" placeholder="e.g. ₹2.5L"/></div>
+      <div class="fg"><label class="fl">Marks %</label>
+        <input class="fi no" id="m_sk" value="${escH(a?.marks||'')}" placeholder="e.g. 78%"/></div>
+    </div>`,
+    () => {
+      const name=v('m_sn'), roll=v('m_sr');
+      if (!name||!roll) return;
+      const obj = { name, roll, dept:v('m_sd'), income:v('m_si'), marks:v('m_sk') };
+      if (a) { Object.assign(a,obj); }
+      else   { d.apps.push({id:Date.now(),...obj,status:'pending'}); addNotif('🎓',`New scholarship application from ${name}`); }
+      closeModal(); renderPage();
+    });
+}
+
+/* ═══════════════════════════════════════════════════════
+   USERS
+═══════════════════════════════════════════════════════ */
+function pageUsers() {
+  const isAdmin = S.auth?.role==='admin';
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">👥 User Management</div>
+    ${isAdmin ? `<button class="btn bp" onclick="openUserModal(null)">+ Add User</button>` : `<span class="role-tag rt-staff">👁 View Only</span>`}
+  </div>
+  <div class="card"><div class="cb p0">
+    ${S.users.map(u=>`<div class="ucard">
+      <div class="uca">${u.role==='Admin'?'🛡️':u.role==='HOD'?'🎓':'👨‍💼'}</div>
+      <div style="flex:1;min-width:0">
+        <div class="ucn">${escH(u.name)}</div>
+        <div class="ucr">${u.role} · ${u.dept} · ${u.email} · ${u.phone}</div>
+      </div>
+      <span class="sbadge ${u.status==='active'?'approved':'rejected'}">${u.status}</span>
+      ${isAdmin?`<div class="abts">
+        <button class="btn bg2 bxs" onclick="openUserModal(${u.id})">✏️ Edit</button>
+        <button class="btn berr bxs" onclick="delUser(${u.id})">🗑️</button>
+      </div>`:''}
+    </div>`).join('')}
+  </div></div></div>`;
+}
+
+function openUserModal(id) {
+  const u = id ? S.users.find(u=>u.id===id) : null;
+  openModal(u?'✏️ Edit User':'👤 Add User', `
+    <div class="fg"><label class="fl">Full Name</label>
+      <input class="fi no" id="m_un" value="${escH(u?.name||'')}" placeholder="Full name"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Role</label>
+        <select class="fi no" id="m_ur"><option${u?.role==='Admin'?' selected':''}>Admin</option><option${u?.role==='Staff'?' selected':''}>Staff</option><option${u?.role==='HOD'?' selected':''}>HOD</option></select></div>
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="m_ud">${[...DEPTS,'Administration'].map(d=>`<option${u?.dept===d?' selected':''}>${d}</option>`).join('')}</select></div>
+    </div>
+    <div class="fg"><label class="fl">Email</label>
+      <input type="email" class="fi no" id="m_ue" value="${escH(u?.email||'')}" placeholder="email@college.edu" autocomplete="off"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Phone</label>
+        <input class="fi no" id="m_up" value="${escH(u?.phone||'')}" placeholder="10-digit phone"/></div>
+      <div class="fg"><label class="fl">Status</label>
+        <select class="fi no" id="m_us"><option value="active"${u?.status==='active'?' selected':''}>Active</option><option value="inactive"${u?.status==='inactive'?' selected':''}>Inactive</option></select></div>
+    </div>`,
+    () => {
+      const name=v('m_un'), email=v('m_ue');
+      if (!name||!email) return;
+      const obj = { name, role:v('m_ur'), dept:v('m_ud'), email, phone:v('m_up'), status:v('m_us') };
+      if (u) { Object.assign(u,obj); addNotif('👥',`User updated: ${name}`); }
+      else   { S.users.push({id:Date.now(),...obj}); addNotif('👥',`New user added: ${name}`); }
+      closeModal(); renderPage();
+    });
+}
+
+function delUser(id) {
+  if (!confirm('Remove this user?')) return;
+  S.users = S.users.filter(u=>u.id!==id);
+  renderPage();
+}
+
+/* ═══════════════════════════════════════════════════════
+   TIMETABLE
+═══════════════════════════════════════════════════════ */
+const TT_SUBJECTS = { CSE:['DS','DBMS','OS','CN','SE','ML','WEB'], ECE:['SS','EC','DSP','VLSI','EMF','CN','ES'], MECH:['TD','FM','ME','MFG','DM','HT','CAD'], IT:['WEB','SE','DBMS','AI','CN','IoT','SEC'], CIVIL:['SM','FM','GE','TE','SD','HE','CM'] };
+const TT_DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+const TT_PERIODS = ['9–10','10–11','11–12','12–1','1–2','2–3','3–4'];
+
+function pageTimetable() {
+  const isAdmin = S.auth?.role==='admin';
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">📅 Timetable Generator</div>
+    ${!isAdmin ? `<span class="role-tag rt-hod">👁 View Only</span>` : ''}
+  </div>
+  <div class="card"><div class="cb">
+    <div class="frow" style="gap:12px;margin-bottom:18px">
+      <div class="fg" style="margin:0;flex:1;max-width:200px">
+        <label class="fl">Department</label>
+        <select class="fi no" onchange="S.ttDept=this.value;S.ttTable=null;renderPage()">${DEPTS.map(d=>`<option${S.ttDept===d?' selected':''}>${d}</option>`).join('')}</select>
+      </div>
+      <div class="fg" style="margin:0;flex:1;max-width:180px">
+        <label class="fl">Semester</label>
+        <select class="fi no" onchange="S.ttSem=this.value;S.ttTable=null;renderPage()">${SEMS.map(s=>`<option${S.ttSem===s?' selected':''}>${s}</option>`).join('')}</select>
+      </div>
+      <div style="align-self:flex-end">
+        <button class="btn bp" onclick="genTT()">⚙️ Generate Timetable</button>
+      </div>
+    </div>
+    ${S.ttTable ? `
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Day / Period</th>${TT_PERIODS.map(p=>`<th>${p}</th>`).join('')}</tr></thead>
+        <tbody>${TT_DAYS.map((day,di)=>`<tr>
+          <td class="tm">${day}</td>
+          ${S.ttTable[di].map((subj,pi)=>`<td class="ttcell ${subj==='LUNCH'?'lunch':''}">${subj}</td>`).join('')}
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>` : `<div class="empty-row" style="padding:40px;text-align:center;color:var(--tx3)">
+      Click "Generate Timetable" to auto-create a schedule for <strong>${S.ttDept}</strong> — ${S.ttSem} Semester
+    </div>`}
+  </div></div></div>`;
+}
+
+function genTT() {
+  const subjs = TT_SUBJECTS[S.ttDept] || TT_SUBJECTS.CSE;
+  S.ttTable = TT_DAYS.map(() => TT_PERIODS.map((_,pi) => pi===3?'LUNCH':subjs[Math.floor(Math.random()*subjs.length)]));
+  renderPage();
+}
+
+/* ═══════════════════════════════════════════════════════
+   EXAMINATION
+═══════════════════════════════════════════════════════ */
+function pageExam() {
+  const isAdmin = S.auth?.role==='admin';
+  return `<div class="page">
+  <div class="ph">
+    <div class="pt">📊 Examination Management</div>
+    ${isAdmin ? `<button class="btn bp" onclick="openExamModal(null)">+ Schedule Exam</button>` : `<span class="role-tag rt-staff">👁 View &amp; Export</span>`}
+  </div>
+  <div class="card"><div class="cb p0">
+    <table>
+      <thead><tr><th>#</th><th>Subject</th><th>Dept</th><th>Sem</th><th>Date</th><th>Time</th><th>Hall</th><th>Students</th><th>Actions</th></tr></thead>
+      <tbody>${S.exams.map((e,i)=>`<tr>
+        <td class="ts">${i+1}</td>
+        <td class="tm">${escH(e.subject)}</td>
+        <td><span class="badge a">${e.dept}</span></td>
+        <td class="ts">${e.sem}</td>
+        <td class="ts">${e.date}</td>
+        <td class="ts">${e.time}</td>
+        <td class="ts">${e.hall}</td>
+        <td class="ts">${e.students}</td>
+        <td><div class="abts">
+          ${isAdmin?`<button class="btn bg2 bxs" onclick="openExamModal(${e.id})">✏️ Edit</button>`:''}
+          <button class="btn bp bxs" onclick="dlFile('${escJ(e.subject)}_schedule.txt','Exam: ${escJ(e.subject)}\\nDept: ${e.dept}\\nSemester: ${e.sem}\\nDate: ${e.date}\\nTime: ${e.time}\\nHall: ${e.hall}\\nStudents: ${e.students}')">⬇️ Export</button>
+          ${isAdmin?`<button class="btn berr bxs" onclick="delExam(${e.id})">🗑️</button>`:''}
+        </div></td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div></div></div>`;
+}
+
+function openExamModal(id) {
+  const e = id ? S.exams.find(e=>e.id===id) : null;
+  openModal(e?'✏️ Edit Exam':'📊 Schedule Exam', `
+    <div class="fg"><label class="fl">Subject Name</label>
+      <input class="fi no" id="m_esn" value="${escH(e?.subject||'')}" placeholder="e.g. Data Structures"/></div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Department</label>
+        <select class="fi no" id="m_edp">${DEPTS.map(d=>`<option${e?.dept===d?' selected':''}>${d}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Semester</label>
+        <select class="fi no" id="m_es">${SEMS.map(s=>`<option${e?.sem===s?' selected':''}>${s}</option>`).join('')}</select></div>
+    </div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Date</label>
+        <input type="date" class="fi no" id="m_ed" value="${e?.date||''}"/></div>
+      <div class="fg"><label class="fl">Time</label>
+        <input class="fi no" id="m_et" value="${escH(e?.time||'9:00 AM')}" placeholder="e.g. 9:00 AM"/></div>
+    </div>
+    <div class="frow2">
+      <div class="fg"><label class="fl">Hall Number</label>
+        <input class="fi no" id="m_eh" value="${escH(e?.hall||'')}" placeholder="e.g. A101"/></div>
+      <div class="fg"><label class="fl">No. of Students</label>
+        <input type="number" class="fi no" id="m_est" value="${e?.students||60}" min="1"/></div>
+    </div>`,
+    () => {
+      const subject = v('m_esn');
+      if (!subject) return;
+      const obj = { subject, dept:v('m_edp'), sem:v('m_es'), date:v('m_ed'), time:v('m_et'), hall:v('m_eh'), students:parseInt(v('m_est'))||60 };
+      if (e) { Object.assign(e,obj); addNotif('📊',`Exam updated: ${subject}`); }
+      else   { S.exams.push({id:Date.now(),...obj}); addNotif('📊',`Exam scheduled: ${subject}`); }
+      closeModal(); renderPage();
+    });
+}
+
+function delExam(id) {
+  if (!confirm('Delete this exam?')) return;
+  S.exams = S.exams.filter(e=>e.id!==id);
+  renderPage();
+}
+
+/* ═══════════════════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════════════════ */
+function pageSettings() {
+  const st = S.settings;
+  return `<div class="page">
+  <div class="ph"><div class="pt">⚙️ Settings &amp; Preferences</div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <div class="ch"><span class="ct">🏛️ College Information</span></div>
+      <div class="cb">
+        <div class="fg"><label class="fl">College Name</label>
+          <input class="fi no" id="st_cn" value="${escH(st.college)}"/></div>
+        <div class="fg"><label class="fl">Admin Email</label>
+          <input type="email" class="fi no" id="st_em" value="${escH(st.email)}"/></div>
+        <div class="fg"><label class="fl">Phone Number</label>
+          <input class="fi no" id="st_ph" value="${escH(st.phone)}"/></div>
+        <button class="btn bp bsm" onclick="saveSettings()">💾 Save Changes</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">🔔 Notification Preferences</span></div>
+      <div class="cb">
+        ${[
+          { key:'notifs', label:'Push Notifications',   desc:'Real-time alerts for leave requests and approvals' },
+          { key:'emails', label:'Email Alerts',         desc:'Send important updates via email' },
+          { key:'auto',   label:'Auto-Approve Leaves',  desc:'Automatically approve standard leave types' },
+        ].map(p=>`<div class="pi">
+          <div><div class="pil">${p.label}</div><div class="pid">${p.desc}</div></div>
+          <label class="toggle">
+            <input type="checkbox" ${st[p.key]?'checked':''} onchange="S.settings.${p.key}=this.checked"/>
+            <span class="tsl"></span>
+          </label>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div></div>`;
+}
+
+function saveSettings() {
+  S.settings.college = v('st_cn');
+  S.settings.email   = v('st_em');
+  S.settings.phone   = v('st_ph');
+  addNotif('⚙️', 'Settings saved successfully!');
+  const btn = event.target;
+  btn.textContent = '✅ Saved!';
+  setTimeout(() => { btn.textContent = '💾 Save Changes'; }, 2000);
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODAL SYSTEM
+═══════════════════════════════════════════════════════ */
+let _save = null;
+function openModal(title, body, onSave) {
+  _save = onSave;
+  ge('mtitle').textContent = title;
+  ge('mbody').innerHTML    = body;
+  ge('mfoot').innerHTML    = `
+    <button class="btn bg2" onclick="closeModal()">Cancel</button>
+    <button class="btn bp"  onclick="_save&&_save()">💾 Save</button>`;
+  ge('modal').style.display = 'flex';
+}
+
+function closeModal() { ge('modal').style.display = 'none'; }
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+const ge = id => document.getElementById(id);
+const v  = id => { const el=ge(id); return el?(el.value||'').trim():''; };
+
+function today() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function roleIcon(role) {
+  return role==='admin'?'🛡️':role==='staff'?'👨‍💼':'🎓';
+}
+
+function escH(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function escJ(s) {
+  return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"');
+}
+
+function dlFile(name, content) {
+  const blob = new Blob([content], { type:'text/plain;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════════ */
+render();
+</script>
+</body>
 </html>
