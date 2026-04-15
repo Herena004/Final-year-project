@@ -407,9 +407,9 @@ const S = {
   docSearch:'', docType:'All', docDept:'All',
   ttDept:'CSE', ttSem:'3rd', ttTable:null,
   accounts: [
-    { name:'Admin User',   email:'admin@college.edu', password:'admin123', role:'admin' },
-    { name:'Staff Member', email:'staff@college.edu', password:'staff123', role:'staff' },
-    { name:'HOD Kumar',    email:'hod@college.edu',   password:'hod123',   role:'hod'   },
+    { name:'Admin User',   email:'admin@college.edu', passwordHash:'240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', role:'admin' },
+    { name:'Staff Member', email:'staff@college.edu', passwordHash:'10176e7b7b24d317acfcf8d2064cfd2f24e154f7b5a96603077d5ef813d6a6b6', role:'staff' },
+    { name:'HOD Kumar',    email:'hod@college.edu',   passwordHash:'5c8473579466adb756fa9e042efc8d7756217c5f4c950731fcf96bd65ba184e9', role:'hod'   },
   ],
   notifications: [
     { id:1, icon:'📋', text:'New leave request from Priya S.', time:'2 min ago', read:false },
@@ -480,6 +480,14 @@ function render() {
 }
 
 /* ═══════════════════════════════════════════════════════
+   PASSWORD HASHING (Web Crypto API — no external libs)
+═══════════════════════════════════════════════════════ */
+async function hashPwd(pwd) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
    AUTH
 ═══════════════════════════════════════════════════════ */
 function showAuth() {
@@ -487,7 +495,6 @@ function showAuth() {
   document.getElementById('app').style.display = 'none';
   const box = document.getElementById('authBox');
   const r = S.authRole;
-  const hints = { admin:'admin@college.edu / admin123', staff:'staff@college.edu / staff123', hod:'hod@college.edu / hod123' };
   const tabs = ['admin','staff','hod'].map(rl => `
     <button class="rtab ${S.authRole===rl?'on':''}" onclick="setAuthRole('${rl}')">
       <span class="ico">${rl==='admin'?'🛡️':rl==='staff'?'👨‍💼':'🎓'}</span>
@@ -501,7 +508,6 @@ function showAuth() {
       <div class="rtabs">${tabs}</div>
       ${S.authSuccess ? `<div class="asuc">✅ ${S.authSuccess}</div>` : ''}
       ${S.authError   ? `<div class="aerr">⚠️ ${S.authError}</div>` : ''}
-      <div class="ahint">💡 Hint: ${hints[r]}</div>
       <form onsubmit="doLogin(event)">
         <div class="fg"><label class="fl">Email Address</label>
           <div class="iw"><span class="ii">✉️</span><input class="fi" type="email" id="l_email" placeholder="Enter your email" required autocomplete="username"/></div></div>
